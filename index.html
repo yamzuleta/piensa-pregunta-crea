@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OVA · Pensamiento Crítico y Creativo · v0.4</title>
+<meta name="description" content="Objeto Virtual de Aprendizaje interactivo sobre pensamiento crítico y creativo: curiosidad, preguntas, construcción de respuestas y creatividad aplicada.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0f1230; --ink2:#2f3358; --ink3:#5b5f85;
+  --bg:#f7f5f0; --card:#ffffff;
+  --violet:#4a2b7a; --violet2:#7d5cc0; --violet-soft:#efe9fb;
+  --amber:#e9a13b; --amber-soft:#fdf2df;
+  --teal:#0e9384; --teal-soft:#e2f5f1;
+  --rose:#d9536a; --rose-soft:#fdeaee;
+  --line:rgba(15,18,48,.10);
+  --shadow:0 1px 2px rgba(15,18,48,.05),0 12px 32px -12px rgba(15,18,48,.18);
+  --r:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{line-height:1.15; margin:0; letter-spacing:-.02em; font-weight:800}
+p{margin:0 0 1em}
+a{color:var(--violet); text-underline-offset:3px}
+img,svg{max-width:100%}
+.wrap{width:min(1120px,calc(100% - 40px)); margin:0 auto}
+
+/* ---------- progress + topbar ---------- */
+.progress{position:fixed; inset:0 0 auto 0; height:4px; background:transparent; z-index:60}
+.progress span{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--violet2),var(--amber)); transition:width .12s linear}
+.topbar{position:sticky; top:0; z-index:50; background:rgba(247,245,240,.86); backdrop-filter:blur(14px); border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex; align-items:center; gap:18px; height:66px}
+.brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:15px; letter-spacing:-.01em; white-space:nowrap}
+.brand .dot{width:26px;height:26px;border-radius:9px;background:linear-gradient(135deg,var(--violet),var(--violet2)); display:grid;place-items:center;color:#fff;font-size:13px;font-weight:800}
+.nav{margin-left:auto; display:flex; gap:4px; overflow-x:auto; scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{font-size:13.5px; font-weight:600; color:var(--ink3); text-decoration:none; padding:7px 11px; border-radius:99px; white-space:nowrap; transition:.18s}
+.nav a:hover{background:var(--violet-soft); color:var(--violet)}
+.nav a.active{background:var(--violet); color:#fff}
+
+/* ---------- hero ---------- */
+.hero{position:relative; overflow:hidden; background:
+  radial-gradient(900px 500px at 82% 8%, rgba(233,161,59,.22), transparent 62%),
+  radial-gradient(760px 520px at 12% 92%, rgba(125,92,192,.30), transparent 60%),
+  linear-gradient(160deg,#141433 0%,#241a4d 52%,#2b1c58 100%);
+  color:#fff; padding:76px 0 86px}
+.hero:after{content:""; position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px); background-size:26px 26px; opacity:.5; pointer-events:none}
+.hero .wrap{position:relative; z-index:2; display:grid; grid-template-columns:1.15fr .85fr; gap:44px; align-items:center}
+.kicker{display:inline-flex; align-items:center; gap:9px; font-size:12px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#f3d9a8; border:1px solid rgba(243,217,168,.35); padding:7px 14px; border-radius:99px; background:rgba(243,217,168,.08)}
+.hero h1{font-family:'Fraunces',Georgia,serif; font-weight:700; font-size:clamp(2.5rem,5.4vw,4.1rem); margin:22px 0 0; letter-spacing:-.03em}
+.hero h1 em{font-style:normal; background:linear-gradient(100deg,#f7d9a4,#e9a13b 55%,#f3c7d0); -webkit-background-clip:text; background-clip:text; color:transparent}
+.hero p.sub{font-size:1.11rem; color:#d8d3ea; max-width:34em; margin-top:18px}
+.chips{display:flex; flex-wrap:wrap; gap:9px; margin:26px 0 30px}
+.chip{font-size:12.5px; font-weight:600; padding:7px 13px; border-radius:99px; background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.16); color:#efeaff}
+.btn{display:inline-flex; align-items:center; gap:9px; font:inherit; font-weight:700; font-size:15px; padding:14px 24px; border-radius:99px; border:0; cursor:pointer; text-decoration:none; transition:transform .16s, box-shadow .16s, background .16s}
+.btn-primary{background:linear-gradient(135deg,#f6c56b,#e9a13b); color:#3a2708; box-shadow:0 12px 26px -12px rgba(233,161,59,.85)}
+.btn-primary:hover{transform:translateY(-2px); box-shadow:0 18px 34px -14px rgba(233,161,59,.9)}
+.btn-ghost{background:rgba(255,255,255,.08); color:#fff; border:1px solid rgba(255,255,255,.26)}
+.btn-ghost:hover{background:rgba(255,255,255,.16)}
+.btn-solid{background:var(--violet); color:#fff}
+.btn-solid:hover{background:#3b2064; transform:translateY(-1px)}
+.btn-line{background:#fff; color:var(--violet); border:1.5px solid var(--line)}
+.btn-line:hover{border-color:var(--violet2); background:var(--violet-soft)}
+.orb{display:grid; place-items:center}
+.orb svg{filter:drop-shadow(0 24px 44px rgba(0,0,0,.42))}
+
+/* ---------- sections ---------- */
+section{padding:74px 0}
+section.alt{background:#fff; border-block:1px solid var(--line)}
+.sec-head{max-width:44em; margin-bottom:38px}
+.eyebrow{font-size:12px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--violet2); display:flex; align-items:center; gap:10px; margin-bottom:14px}
+.eyebrow:before{content:""; width:26px; height:2px; background:var(--amber); border-radius:2px}
+h2{font-size:clamp(1.75rem,3.2vw,2.5rem); letter-spacing:-.03em}
+.lead{font-size:1.06rem; color:var(--ink2); margin-top:14px}
+
+.grid-2{display:grid; grid-template-columns:repeat(2,1fr); gap:22px}
+.grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:20px}
+.grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:26px; box-shadow:var(--shadow)}
+.card h3{font-size:1.12rem; margin-bottom:8px}
+.card p{font-size:.95rem; color:var(--ink2); margin:0}
+.card .num{font-family:'Fraunces',Georgia,serif; font-size:13px; font-weight:700; color:var(--violet2); letter-spacing:.1em}
+
+.objectives{display:grid; gap:14px; margin-top:8px}
+.obj{display:flex; gap:16px; align-items:flex-start; background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px 20px; box-shadow:var(--shadow)}
+.obj .mark{flex:0 0 38px; height:38px; border-radius:12px; display:grid; place-items:center; font-weight:800; font-size:15px; color:#fff; background:linear-gradient(135deg,var(--violet),var(--violet2))}
+.obj:nth-child(2) .mark{background:linear-gradient(135deg,#0e9384,#3fc0a9)}
+.obj:nth-child(3) .mark{background:linear-gradient(135deg,#c9762a,#e9a13b)}
+.obj:nth-child(4) .mark{background:linear-gradient(135deg,#b23a55,#d9536a)}
+.obj h4{font-size:1rem; margin-bottom:3px}
+.obj p{font-size:.92rem; color:var(--ink2); margin:0}
+
+/* ruta */
+.route{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; position:relative}
+.route:before{content:""; position:absolute; top:34px; left:6%; right:6%; height:2px; background:repeating-linear-gradient(90deg,var(--violet2) 0 8px,transparent 8px 16px); opacity:.45}
+.station{position:relative; background:#fff; border:1px solid var(--line); border-radius:16px; padding:20px 18px; text-align:center; box-shadow:var(--shadow); text-decoration:none; color:inherit; transition:.2s}
+.station:hover{transform:translateY(-4px); border-color:var(--violet2)}
+.station .ring{width:52px; height:52px; margin:0 auto 12px; border-radius:50%; display:grid; place-items:center; font-family:'Fraunces',serif; font-weight:700; font-size:19px; color:#fff; background:linear-gradient(135deg,var(--violet),var(--violet2)); box-shadow:0 0 0 5px #fff}
+.station:nth-child(2) .ring{background:linear-gradient(135deg,#0e9384,#3fc0a9)}
+.station:nth-child(3) .ring{background:linear-gradient(135deg,#c9762a,#e9a13b)}
+.station:nth-child(4) .ring{background:linear-gradient(135deg,#b23a55,#d9536a)}
+.station h4{font-size:.98rem; margin-bottom:5px}
+.station p{font-size:.83rem; color:var(--ink3); margin:0}
+
+/* module blocks */
+.module-head{display:flex; gap:20px; align-items:flex-start; margin-bottom:28px}
+.module-head .big{flex:0 0 auto; font-family:'Fraunces',Georgia,serif; font-size:3.4rem; line-height:.85; font-weight:700; color:transparent; -webkit-text-stroke:1.6px var(--violet2); opacity:.55}
+.module-head .txt h2{font-size:clamp(1.6rem,2.9vw,2.2rem)}
+.module-head .tag{display:inline-block; margin-top:10px; font-size:11.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--teal); background:var(--teal-soft); padding:5px 11px; border-radius:99px}
+.concept{background:linear-gradient(135deg,#f4efff,#fbf8ff); border:1px solid rgba(125,92,192,.22); border-left:4px solid var(--violet2); border-radius:14px; padding:20px 22px; margin:22px 0}
+.concept strong{color:var(--violet)}
+.quote{border-left:3px solid var(--amber); padding:4px 0 4px 20px; margin:24px 0; font-family:'Fraunces',Georgia,serif; font-size:1.16rem; color:var(--ink2); font-style:italic}
+.pillars{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin:22px 0}
+.pillar{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px 20px}
+.pillar h4{font-size:.98rem; margin-bottom:6px; display:flex; align-items:center; gap:9px}
+.pillar h4 i{width:9px; height:9px; border-radius:50%; background:var(--amber); flex:0 0 auto}
+.pillar p{font-size:.9rem; color:var(--ink2); margin:0}
+details.acc{background:#fff; border:1px solid var(--line); border-radius:14px; padding:0 20px; margin-bottom:10px; box-shadow:0 1px 2px rgba(15,18,48,.04)}
+details.acc summary{cursor:pointer; list-style:none; padding:17px 0; font-weight:700; font-size:.98rem; display:flex; align-items:center; gap:12px}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary:after{content:"+"; margin-left:auto; font-size:22px; font-weight:400; color:var(--violet2); line-height:1}
+details.acc[open] summary:after{content:"–"}
+details.acc .body{font-size:.94rem; color:var(--ink2); padding:0 0 18px}
+details.acc .body p:last-child{margin:0}
+
+/* activity shell */
+.activity{background:#fff; border:1.5px solid rgba(125,92,192,.28); border-radius:20px; padding:26px; margin:28px 0; box-shadow:0 18px 44px -26px rgba(74,43,122,.45)}
+.act-head{display:flex; align-items:center; gap:12px; margin-bottom:6px; flex-wrap:wrap}
+.badge{font-size:11px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; padding:6px 12px; border-radius:99px; background:var(--amber-soft); color:#8a5a12; border:1px solid rgba(233,161,59,.4)}
+.activity h3{font-size:1.22rem}
+.activity .hint{font-size:.9rem; color:var(--ink3); margin:8px 0 18px}
+label.fl{display:block; font-size:.82rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink3); margin-bottom:6px}
+input[type=text],textarea,select{width:100%; font:inherit; font-size:.95rem; padding:12px 14px; border:1.5px solid var(--line); border-radius:11px; background:#fcfbf9; color:var(--ink); transition:.16s}
+input[type=text]:focus,textarea:focus,select:focus{outline:none; border-color:var(--violet2); background:#fff; box-shadow:0 0 0 4px rgba(125,92,192,.12)}
+textarea{resize:vertical; min-height:92px}
+.chain{display:grid; gap:10px; margin:16px 0}
+.chain .row{display:flex; gap:12px; align-items:center}
+.chain .n{flex:0 0 40px; height:40px; border-radius:12px; display:grid; place-items:center; font-weight:800; font-size:14px; background:var(--violet-soft); color:var(--violet); border:1px solid rgba(125,92,192,.2)}
+.btn-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:16px}
+.btn-sm{font-size:13.5px; padding:10px 18px; border-radius:99px; font-weight:700; border:1.5px solid transparent; cursor:pointer; font-family:inherit; transition:.16s}
+.btn-mini{background:var(--violet); color:#fff}
+.btn-mini:hover{background:#3b2064}
+.btn-out{background:#fff; color:var(--violet); border-color:rgba(125,92,192,.4)}
+.btn-out:hover{background:var(--violet-soft)}
+.feedback{margin-top:14px; font-size:.92rem; padding:13px 16px; border-radius:12px; display:none}
+.feedback.show{display:block}
+.feedback.good{background:var(--teal-soft); border:1px solid rgba(14,147,132,.3); color:#0a6b60}
+.feedback.bad{background:var(--rose-soft); border:1px solid rgba(217,83,106,.3); color:#a02a40}
+
+/* judgement activity */
+.judge{display:grid; gap:12px; margin-top:6px}
+.jitem{border:1px solid var(--line); border-radius:14px; padding:16px 18px; background:#fcfbf9}
+.jitem .stmt{font-size:.95rem; margin-bottom:12px; color:var(--ink)}
+.jitem .opts{display:flex; flex-wrap:wrap; gap:8px}
+.jbtn{font:inherit; font-size:12.5px; font-weight:700; padding:7px 14px; border-radius:99px; border:1.5px solid var(--line); background:#fff; cursor:pointer; color:var(--ink2); transition:.14s}
+.jbtn:hover{border-color:var(--violet2); color:var(--violet)}
+.jbtn.sel{background:var(--violet); border-color:var(--violet); color:#fff}
+.jbtn.correct{background:var(--teal); border-color:var(--teal); color:#fff}
+.jbtn.wrong{background:var(--rose); border-color:var(--rose); color:#fff}
+.jexp{font-size:.86rem; color:var(--ink3); margin-top:10px; display:none; padding-top:10px; border-top:1px dashed var(--line)}
+.jexp.show{display:block}
+
+/* matrix */
+.mtable{width:100%; border-collapse:separate; border-spacing:0; font-size:.9rem; margin-top:6px; overflow:hidden; border-radius:12px; border:1px solid var(--line)}
+.mtable th,.mtable td{padding:11px 13px; text-align:left; border-bottom:1px solid var(--line)}
+.mtable thead th{background:#f4f1fb; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink3); font-weight:800}
+.mtable tbody tr:last-child td{border-bottom:0}
+.mtable .crit{font-weight:600; color:var(--ink)}
+.mtable input[type=range]{width:100%; accent-color:var(--violet2)}
+.score{font-weight:800; color:var(--violet); font-variant-numeric:tabular-nums}
+.winner{margin-top:14px; padding:14px 18px; border-radius:12px; background:var(--teal-soft); border:1px solid rgba(14,147,132,.28); font-size:.93rem; color:#0a6b60; display:none}
+.winner.show{display:block}
+
+/* quiz */
+.quizbox{display:grid; gap:16px}
+.q{border:1px solid var(--line); border-radius:16px; padding:20px 22px; background:#fcfbf9}
+.q .qn{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--violet2); margin-bottom:7px}
+.q .qt{font-size:1rem; font-weight:700; margin-bottom:13px}
+.opts-col{display:grid; gap:8px}
+.opt{display:flex; gap:11px; align-items:flex-start; font-size:.93rem; padding:11px 14px; border:1.5px solid var(--line); border-radius:11px; background:#fff; cursor:pointer; transition:.14s}
+.opt:hover{border-color:var(--violet2)}
+.opt input{margin-top:3px; accent-color:var(--violet)}
+.opt.ok{border-color:var(--teal); background:var(--teal-soft)}
+.opt.no{border-color:var(--rose); background:var(--rose-soft)}
+.qfb{font-size:.88rem; margin-top:11px; display:none; padding:11px 14px; border-radius:10px}
+.qfb.show{display:block}
+.result{display:none; text-align:center; padding:30px; border-radius:18px; background:linear-gradient(135deg,#f4efff,#fff8ec); border:1px solid rgba(125,92,192,.25)}
+.result.show{display:block}
+.result .pct{font-family:'Fraunces',serif; font-size:3.2rem; font-weight:700; color:var(--violet); line-height:1}
+.result p{font-size:.95rem; color:var(--ink2); margin:10px 0 0}
+
+/* autoeval bars */
+.selfrow{display:grid; grid-template-columns:1fr 200px 44px; gap:16px; align-items:center; padding:12px 0; border-bottom:1px solid var(--line)}
+.selfrow:last-child{border-bottom:0}
+.selfrow .nm{font-size:.92rem; font-weight:600}
+.selfrow input[type=range]{width:100%; accent-color:var(--amber)}
+.selfrow .val{font-weight:800; font-size:.95rem; color:var(--violet); text-align:right; font-variant-numeric:tabular-nums}
+
+/* glossary + refs */
+dl.gloss{display:grid; gap:12px; margin:0}
+dl.gloss div{background:#fff; border:1px solid var(--line); border-radius:13px; padding:16px 20px}
+dl.gloss dt{font-weight:800; font-size:.96rem; color:var(--violet)}
+dl.gloss dd{margin:5px 0 0; font-size:.92rem; color:var(--ink2)}
+.refs{font-size:.9rem; color:var(--ink2); padding-left:20px}
+.refs li{margin-bottom:9px}
+
+/* footer */
+footer{background:#0f1230; color:#c9c5dd; padding:52px 0 40px; font-size:.9rem}
+footer .wrap{display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:34px}
+footer h5{color:#fff; font-size:.86rem; letter-spacing:.12em; text-transform:uppercase; margin:0 0 12px; font-weight:800}
+footer p{color:#a9a4c4; margin:0 0 8px}
+footer a{color:#f3d9a8; text-decoration:none}
+.fnote{margin-top:34px; padding-top:20px; border-top:1px solid rgba(255,255,255,.12); font-size:.82rem; color:#8f8aab; grid-column:1/-1}
+
+@media (max-width:900px){
+  .hero .wrap{grid-template-columns:1fr; gap:34px}
+  .orb{order:-1; max-width:300px; margin:0 auto}
+  .grid-2,.grid-3,.grid-4,.route,.pillars{grid-template-columns:1fr 1fr}
+  .route:before{display:none}
+  footer .wrap{grid-template-columns:1fr}
+  .selfrow{grid-template-columns:1fr 120px 40px}
+}
+@media (max-width:620px){
+  body{font-size:16px}
+  section{padding:54px 0}
+  .grid-2,.grid-3,.grid-4,.route,.pillars{grid-template-columns:1fr}
+  .module-head{gap:14px}
+  .module-head .big{font-size:2.4rem}
+  .nav{gap:2px}
+  .card,.activity{padding:20px}
+  .selfrow{grid-template-columns:1fr 90px 36px; gap:10px}
+}
+@media print{
+  .topbar,.progress,.btn,.btn-row{display:none!important}
+  body{background:#fff}
+  section{padding:20px 0; break-inside:avoid}
+  .hero{background:#fff;color:#000}
+  .hero h1 em{color:#000;-webkit-text-fill-color:#000}
+}
+.vid-thumb{position:relative;aspect-ratio:16/9;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,#241a4d,#4a2b7a 55%,#7d5cc0)}.vid-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}.vid-thumb .vid-play,.vid-thumb .vid-dur{z-index:3}
+
+/* Ajustes pedagógicos v0.2 */
+.assess-panel{margin-top:16px;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:#f7fafb}
+.assess-panel h4{margin:0 0 7px;color:var(--navy,var(--ink))}
+.assess-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.assess-item{padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:10px}
+.assess-item label{display:block;font-size:.86rem;font-weight:700;margin-bottom:6px}
+.assess-item select{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.journey{max-width:980px;margin:38px auto 0;padding:16px 18px;border:1px solid rgba(14,147,132,.25);border-radius:16px;background:linear-gradient(120deg,#f0faf8,#f7f4ff);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.journey small{display:block;color:var(--ink3);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.journey strong{display:block;color:var(--ink);font-size:.98rem}
+.journey .journey-actions{display:flex;gap:8px;flex-wrap:wrap}
+.journey a{display:inline-block;text-decoration:none;padding:9px 13px;border-radius:9px;font-size:.85rem;font-weight:800;background:var(--teal);color:white}
+.journey a.prev{background:#fff;color:var(--ink2);border:1px solid var(--line)}
+.range-val{display:inline-block;min-width:22px;text-align:center;margin-left:5px;padding:2px 6px;border-radius:6px;background:#eef4f5;font-weight:800;color:var(--teal);font-size:.82rem}
+.scale-note{font-size:.82rem;color:var(--ink2);margin-top:6px;line-height:1.45}
+@media(max-width:650px){.assess-grid{grid-template-columns:1fr}.journey{align-items:flex-start;flex-direction:column}.journey .journey-actions{width:100%}.journey a{flex:1;text-align:center}}
+
+
+/* v0.4 · interfaces guiadas para matriz y prueba */
+.matrix-simple{display:grid;gap:12px}
+.matrix-criterion{display:grid;grid-template-columns:minmax(180px,1.2fr) minmax(130px,.55fr) minmax(260px,1.6fr);gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.matrix-criterion p{font-size:.82rem;color:var(--ink3);margin:4px 0 0}
+.matrix-criterion label,.matrix-ratings label{font-size:.8rem;font-weight:700;color:var(--ink2);display:grid;gap:5px}
+.matrix-criterion select,.matrix-ratings select{width:100%;min-height:42px;border:1px solid var(--line);border-radius:9px;padding:8px;background:#fff;color:var(--ink);font:inherit;font-size:.9rem}
+.matrix-ratings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.matrix-results{margin-top:16px;padding:16px;border-radius:14px;background:var(--teal-soft);border:1px solid rgba(14,147,132,.22)}
+.matrix-results .card{padding:12px;text-align:center;box-shadow:none}
+.matrix-results .card span{font-size:.8rem;color:var(--ink3)}
+.test-flow{display:grid;gap:12px}
+.test-step{display:grid;grid-template-columns:38px minmax(0,1fr);gap:12px;padding:16px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.step-no{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--violet-soft);color:var(--violet);font-weight:800}
+.test-step h4{font-size:1rem;margin:3px 0 5px}.test-step p{font-size:.86rem;color:var(--ink3);margin:0 0 9px}
+.test-step input,.test-step textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff;color:var(--ink);font:inherit;font-size:.92rem}
+.test-step textarea{resize:vertical}
+@media(max-width:760px){.matrix-criterion{grid-template-columns:1fr}.matrix-ratings{grid-template-columns:repeat(3,minmax(0,1fr))}.matrix-ratings label{font-size:.72rem}.test-step{grid-template-columns:30px minmax(0,1fr);padding:12px}}
+
+</style>
+</head>
+<body>
+<div class="progress"><span id="bar"></span></div>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="dot">PC</span> Piensa · Pregunta · Crea</div>
+    <nav class="nav" id="nav">
+      <a href="#inicio">Inicio</a>
+      <a href="#proposito">Propósito</a>
+      <a href="#ruta">Ruta</a>
+      <a href="#m1">1. Curiosidad</a>
+      <a href="#m2">2. Preguntar</a>
+      <a href="#m3">3. Respuestas</a>
+      <a href="#m4">4. Creatividad</a>
+      <a href="#caso">Caso</a>
+      <a href="#evaluacion">Evaluación</a>
+      <a href="#auto">Autoevaluación</a>
+      <a href="#coevaluacion">Coevaluación</a>
+      <a href="#glosario">Glosario</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section id="inicio" class="hero">
+  <div class="wrap">
+    <div>
+      <span class="kicker">Objeto Virtual de Aprendizaje</span>
+      <h1>Pensar <em>crítico</em>,<br>crear <em>distinto</em>.</h1>
+      <p class="sub">Un recorrido interactivo por cuatro ejes de aprendizaje: observar una situación, formular preguntas, analizar información y crear alternativas fundamentadas.</p>
+      <div class="chips">
+        <span class="chip">4 módulos</span>
+        <span class="chip">6 actividades prácticas</span>
+        <span class="chip">Recorrido guiado: hasta 60 min</span>
+        <span class="chip">Autoevaluación incluida</span>
+        <span class="chip">Videos opcionales · reproducción integrada</span>
+      </div>
+      <div class="btn-row" style="margin:0">
+        <a class="btn btn-primary" href="#proposito">Comenzar el recorrido →</a>
+        <a class="btn btn-ghost" href="#evaluacion">Ir a la evaluación</a>
+      </div>
+    </div>
+    <div class="orb">
+      <svg viewBox="0 0 420 420" width="420" height="420" role="img" aria-label="Diagrama de los cuatro módulos de aprendizaje orbitando alrededor de una idea central">
+        <defs>
+          <radialGradient id="gcore" cx="50%" cy="45%" r="60%">
+            <stop offset="0%" stop-color="#ffe0a8"/><stop offset="100%" stop-color="#e9a13b"/>
+          </radialGradient>
+          <linearGradient id="gring" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#a98bff"/><stop offset="100%" stop-color="#6a4bc0"/>
+          </linearGradient>
+        </defs>
+        <circle cx="210" cy="210" r="156" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1.5"/>
+        <circle cx="210" cy="210" r="112" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1.5" stroke-dasharray="4 8"/>
+        <circle cx="210" cy="210" r="58" fill="url(#gcore)" opacity=".95"/>
+        <text x="210" y="204" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-size="13" font-weight="800" fill="#3a2708">IDEA</text>
+        <text x="210" y="222" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-size="13" font-weight="800" fill="#3a2708">CENTRAL</text>
+        <g font-family="Plus Jakarta Sans,sans-serif" font-size="12.5" font-weight="700" fill="#fff">
+          <g>
+            <circle cx="210" cy="54" r="30" fill="url(#gring)"/>
+            <text x="210" y="59" text-anchor="middle">1</text>
+            <text x="210" y="20" text-anchor="middle" fill="#e8dffe" font-size="11.5">Curiosidad</text>
+          </g>
+          <g>
+            <circle cx="366" cy="210" r="30" fill="#0e9384"/>
+            <text x="366" y="215" text-anchor="middle">2</text>
+            <text x="366" y="262" text-anchor="middle" fill="#a9efe4" font-size="11.5">Preguntar</text>
+          </g>
+          <g>
+            <circle cx="210" cy="366" r="30" fill="#e9a13b"/>
+            <text x="210" y="371" text-anchor="middle" fill="#3a2708">3</text>
+            <text x="210" y="404" text-anchor="middle" fill="#ffe6be" font-size="11.5">Respuestas</text>
+          </g>
+          <g>
+            <circle cx="54" cy="210" r="30" fill="#d9536a"/>
+            <text x="54" y="215" text-anchor="middle">4</text>
+            <text x="54" y="262" text-anchor="middle" fill="#ffd7de" font-size="11.5">Creatividad</text>
+          </g>
+        </g>
+        <g stroke="url(#gring)" stroke-width="2" opacity=".55">
+          <line x1="210" y1="84" x2="210" y2="152"/>
+          <line x1="336" y1="210" x2="268" y2="210"/>
+          <line x1="210" y1="336" x2="210" y2="268"/>
+          <line x1="84" y1="210" x2="152" y2="210"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+<section id="proposito" class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Antes de empezar</div>
+      <h2>Propósito y resultados de aprendizaje</h2>
+      <p class="lead">Este OVA integra aprendizajes del curso en cuatro módulos conectados. No es solo un resumen para leer: es un entorno para <strong>practicar</strong> el pensamiento crítico y creativo mediante actividades de análisis, reflexión y aplicación.</p>
+    </div>
+
+    <div class="grid-2" style="align-items:start; gap:26px">
+      <div>
+        <h3 style="font-size:1.15rem; margin-bottom:14px">¿Para quién es?</h3>
+        <p style="font-size:.96rem; color:var(--ink2)">Estudiantes de educación superior que deseen aplicar herramientas de pensamiento crítico y creativo a situaciones académicas y cotidianas. No requiere conocimientos previos especializados.</p>
+
+        <h3 style="font-size:1.15rem; margin:26px 0 14px">¿Qué vas a lograr?</h3>
+        <div class="objectives">
+          <div class="obj">
+            <div class="mark">1</div>
+            <div><h4>Reconocer el pensamiento crítico</h4><p>Diferenciarlo de la crítica destructiva y usarlo como método para examinar información, evidencias y prejuicios.</p></div>
+          </div>
+          <div class="obj">
+            <div class="mark">2</div>
+            <div><h4>Formular preguntas que abren</h4><p>Formular preguntas de distintos niveles y utilizar los cinco porqués para explorar posibles causas, sin asumir que la técnica demuestra por sí sola una causa definitiva.</p></div>
+          </div>
+          <div class="obj">
+            <div class="mark">3</div>
+            <div><h4>Construir respuestas fundamentadas</h4><p>Evaluar fuentes, separar hechos de opiniones y argumentar con razones verificables.</p></div>
+          </div>
+          <div class="obj">
+            <div class="mark">4</div>
+            <div><h4>Crear soluciones con criterio</h4><p>Generar alternativas, compararlas mediante criterios explícitos y justificar una opción posible.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="background:linear-gradient(160deg,#faf7ff,#fff); border-color:rgba(125,92,192,.24)">
+        <h3>Ficha técnica del recurso</h3>
+        <table style="width:100%; font-size:.9rem; border-collapse:collapse; margin-top:10px">
+          <tbody>
+            <tr><td style="padding:9px 0; color:var(--ink3); width:42%">Tipo de recurso</td><td style="padding:9px 0; font-weight:600">Objeto Virtual de Aprendizaje (OVA)</td></tr>
+            <tr><td style="padding:9px 0; color:var(--ink3); border-top:1px solid var(--line)">Enfoque</td><td style="padding:9px 0; font-weight:600; border-top:1px solid var(--line)">Aprendizaje activo y autorregulado</td></tr>
+            <tr><td style="padding:9px 0; color:var(--ink3); border-top:1px solid var(--line)">Duración estimada</td><td style="padding:9px 0; font-weight:600; border-top:1px solid var(--line)">Hasta 60 minutos para el recorrido guiado; los videos ampliatorios son opcionales</td></tr>
+            <tr><td style="padding:9px 0; color:var(--ink3); border-top:1px solid var(--line)">Estructura</td><td style="padding:9px 0; font-weight:600; border-top:1px solid var(--line)">4 módulos + caso + evaluación</td></tr>
+            <tr><td style="padding:9px 0; color:var(--ink3); border-top:1px solid var(--line)">Actividades</td><td style="padding:9px 0; font-weight:600; border-top:1px solid var(--line)">6 actividades prácticas, evaluación y reflexión</td></tr>
+            <tr><td style="padding:9px 0; color:var(--ink3); border-top:1px solid var(--line)">Requisitos</td><td style="padding:9px 0; font-weight:600; border-top:1px solid var(--line)">Navegador actualizado; conexión a internet para videos, miniaturas y algunos recursos externos</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:18px; padding:14px 16px; border-radius:12px; background:var(--amber-soft); border:1px solid rgba(233,161,59,.35); font-size:.88rem; color:#7a4f10">
+          <strong>Cómo se usa:</strong> avanza en orden, resuelve las actividades antes de mirar la retroalimentación y cierra con la autoevaluación. Puedes exportar tus respuestas al final.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ruta">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Mapa del recorrido</div>
+      <h2>Cuatro estaciones, una misma competencia</h2>
+      <p class="lead">Cada módulo desarrolla un eje de aprendizaje. En conjunto, permiten recorrer un proceso: observar, preguntar, analizar, crear y decidir.</p>
+    <div class="concept" style="margin-top:18px"><strong>Ruta sugerida: máximo 60 minutos</strong><div class="grid-3" style="gap:10px;margin-top:12px"><div><b>1 · Comprender</b><br><span class="scale-note">Módulos 1 y 2 · 15 min</span></div><div><b>2 · Analizar</b><br><span class="scale-note">Módulo 3 · 10 min</span></div><div><b>3 · Aplicar</b><br><span class="scale-note">Módulo 4 y actividades 5–6 · 20 min</span></div><div><b>4 · Integrar</b><br><span class="scale-note">Caso ConectaU · 5 min</span></div><div><b>5 · Comprobar</b><br><span class="scale-note">Evaluación · 5 min</span></div><div><b>6 · Cerrar</b><br><span class="scale-note">Autoevaluación · 5 min</span></div></div><p class="scale-note" style="margin:10px 0 0">Los tiempos son orientativos para el recorrido esencial. Los cinco videos suman aproximadamente 32 minutos y son ampliatorios; verlos todos extiende el recorrido más allá de 60 minutos.</p></div>
+    </div>
+    <div class="route">
+      <a class="station" href="#m1">
+        <div class="ring">1</div>
+        <h4>Curiosidad y cuestionamiento</h4>
+        <p>Qué es el pensamiento crítico y por qué no es criticar</p>
+      </a>
+      <a class="station" href="#m2">
+        <div class="ring">2</div>
+        <h4>Hábito de preguntar</h4>
+        <p>Preguntas que profundizan y la técnica de los cinco porqués</p>
+      </a>
+      <a class="station" href="#m3">
+        <div class="ring">3</div>
+        <h4>Construcción de respuestas</h4>
+        <p>Fuentes confiables, hechos y argumentos</p>
+      </a>
+      <a class="station" href="#m4">
+        <div class="ring">4</div>
+        <h4>Creatividad aplicada</h4>
+        <p>Alternativas, criterios y soluciones que se sostienen</p>
+      </a>
+    </div>
+
+    <div class="grid-3" style="margin-top:30px">
+      <div class="card">
+        <div class="num">01 · RECURSO</div>
+        <h3 style="margin-top:8px">Infografías y esquemas</h3>
+        <p>Diagramas originales dentro del recurso para visualizar procesos: del ciclo de la curiosidad a la matriz de decisión.</p>
+      </div>
+      <div class="card">
+        <div class="num">02 · MULTIMEDIA</div>
+        <h3 style="margin-top:8px">Videos complementarios</h3>
+        <p>Videos seleccionados para ampliar algunos conceptos; su consulta es complementaria.</p>
+      </div>
+      <div class="card">
+        <div class="num">03 · INTERACCIÓN</div>
+        <h3 style="margin-top:8px">Actividades con retorno</h3>
+        <p>Las actividades ofrecen comprobaciones, criterios de revisión y retroalimentación formativa; las respuestas abiertas requieren valoración reflexiva del estudiante.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="m1">
+  <div class="wrap">
+    <div class="module-head">
+      <div class="big">01</div>
+      <div class="txt">
+        <div class="eyebrow">Estación uno</div>
+        <h2>Curiosidad y cuestionamiento</h2>
+        <p class="lead" style="margin-top:10px">Pensar crítico no es criticar. Es la disciplina de examinar antes de creer, y de sostener una duda hasta tener razones.</p>
+        <span class="tag">Resultado: distingue criticar de pensar crítico</span>
+      </div>
+    </div>
+
+    <div class="grid-2" style="align-items:start; gap:30px">
+      <div>
+        <p>Cuando escuchamos «pensamiento crítico» solemos imaginar a alguien señalando errores. Pero criticar es una reacción; <strong>pensar críticamente es un método</strong>. La diferencia está en el orden: la crítica opina primero y escucha después. El pensamiento crítico hace lo contrario.</p>
+
+        <div class="concept">
+          <strong>Definición de trabajo.</strong> El pensamiento crítico es la capacidad de examinar una afirmación, una situación o una creencia, buscando evidencias, reconociendo los propios prejuicios y decidiendo qué es razonable aceptar. Su meta no es destruir ideas, sino <em>quedarse con las que resisten el examen</em>.
+        </div>
+
+        <p>Esa diferencia tiene consecuencias prácticas. Si solo critico, termino aislado y sin propuestas. Si pienso críticamente, termino con una conclusión que puedo defender con razones y que estoy dispuesto a revisar si aparece mejor evidencia.</p>
+
+        <div class="quote">«El problema del mundo es que los necios están seguros de sí mismos y los inteligentes llenos de dudas.» — atribuida a Bertrand Russell</div>
+        <p style="font-size:.9rem; color:var(--ink3)">Y ahí está el riesgo inverso: dudar de todo sin construir nada tampoco es pensar críticamente. La duda tiene que llevar a alguna parte.</p>
+      </div>
+
+      <div class="card" style="background:linear-gradient(165deg,#fbf9ff,#fff)">
+        <h3 style="margin-bottom:6px">Los cuatro pilares</h3>
+        <p style="font-size:.88rem; color:var(--ink3); margin-bottom:16px">Lo que se pone en juego cada vez que examinas algo.</p>
+        <div class="pillars" style="grid-template-columns:1fr; margin:0">
+          <div class="pillar"><h4><i></i>Cuestionar la información</h4><p>Preguntar de dónde viene, quién lo dice y con qué interés antes de darlo por cierto.</p></div>
+          <div class="pillar"><h4><i style="background:var(--teal)"></i>Buscar evidencias</h4><p>Pedir datos, fuentes, ejemplos verificables. Una afirmación sin respaldo sigue siendo una opinión.</p></div>
+          <div class="pillar"><h4><i style="background:var(--rose)"></i>Reconocer prejuicios</h4><p>Incluidos los propios: lo que ya creo influye en lo que acepto como verdad.</p></div>
+          <div class="pillar"><h4><i style="background:var(--violet2)"></i>No aceptar sin analizar</h4><p>Suspender el «sí» automático, incluso cuando la información confirma lo que quiero oír.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.2rem; margin:38px 0 6px">El ciclo del cuestionamiento</h3>
+    <p style="font-size:.95rem; color:var(--ink2); max-width:46em">Ningún paso aislado es pensamiento crítico. Lo que lo produce es el circuito completo: dudar, buscar, contrastar y volver a dudar con lo aprendido.</p>
+
+    <div class="card" style="padding:18px; margin-top:16px">
+      <svg viewBox="0 0 1000 300" role="img" aria-label="Ciclo de cuatro fases del cuestionamiento crítico: detenerse y dudar, buscar evidencias, contrastar fuentes, concluir y revisar" style="width:100%; height:auto">
+        <defs>
+          <marker id="arw" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 z" fill="#7d5cc0"/>
+          </marker>
+        </defs>
+        <line x1="196" y1="150" x2="248" y2="150" stroke="#7d5cc0" stroke-width="2.5" marker-end="url(#arw)"/>
+        <line x1="446" y1="150" x2="498" y2="150" stroke="#7d5cc0" stroke-width="2.5" marker-end="url(#arw)"/>
+        <line x1="696" y1="150" x2="748" y2="150" stroke="#7d5cc0" stroke-width="2.5" marker-end="url(#arw)"/>
+        <path d="M 838 196 C 838 272, 640 284, 500 285 C 360 286, 148 272, 148 200" fill="none" stroke="#e9a13b" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#arw)"/>
+        <text x="500" y="298" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-size="12" font-weight="700" fill="#b07820">revisar y volver a preguntar</text>
+
+        <g font-family="Plus Jakarta Sans,sans-serif">
+          <rect x="24" y="86" width="172" height="128" rx="16" fill="#f4efff" stroke="#a98bff" stroke-width="1.6"/>
+          <circle cx="52" cy="114" r="15" fill="#7d5cc0"/><text x="52" y="119" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">1</text>
+          <text x="110" y="119" font-size="13.5" font-weight="800" fill="#3c2a63">Detente</text>
+          <text x="42" y="148" font-size="12" fill="#4a4568">No reenvíes,</text>
+          <text x="42" y="166" font-size="12" fill="#4a4568">no concluyas,</text>
+          <text x="42" y="184" font-size="12" fill="#4a4568">no opines aún.</text>
+
+          <rect x="274" y="86" width="172" height="128" rx="16" fill="#e2f5f1" stroke="#3fc0a9" stroke-width="1.6"/>
+          <circle cx="302" cy="114" r="15" fill="#0e9384"/><text x="302" y="119" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">2</text>
+          <text x="360" y="119" font-size="13.5" font-weight="800" fill="#0a6b60">Busca</text>
+          <text x="292" y="148" font-size="12" fill="#28564f">¿Quién lo dice?</text>
+          <text x="292" y="166" font-size="12" fill="#28564f">¿Con qué datos?</text>
+          <text x="292" y="184" font-size="12" fill="#28564f">¿Desde cuándo?</text>
+
+          <rect x="524" y="86" width="172" height="128" rx="16" fill="#fdf2df" stroke="#e9a13b" stroke-width="1.6"/>
+          <circle cx="552" cy="114" r="15" fill="#c9762a"/><text x="552" y="119" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">3</text>
+          <text x="610" y="119" font-size="13.5" font-weight="800" fill="#7a4f10">Contrasta</text>
+          <text x="542" y="148" font-size="12" fill="#6b4a15">¿Otra fuente</text>
+          <text x="542" y="166" font-size="12" fill="#6b4a15">independiente dice</text>
+          <text x="542" y="184" font-size="12" fill="#6b4a15">lo mismo?</text>
+
+          <rect x="774" y="86" width="172" height="128" rx="16" fill="#fdeaee" stroke="#e88a9c" stroke-width="1.6"/>
+          <circle cx="802" cy="114" r="15" fill="#c9435e"/><text x="802" y="119" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">4</text>
+          <text x="860" y="119" font-size="13.5" font-weight="800" fill="#8e2439">Concluye</text>
+          <text x="792" y="148" font-size="12" fill="#7a2a3c">Con lo que sí</text>
+          <text x="792" y="166" font-size="12" fill="#7a2a3c">se sostiene, y deja</text>
+          <text x="792" y="184" font-size="12" fill="#7a2a3c">la puerta abierta.</text>
+        </g>
+      </svg>
+    </div>
+
+    <h3 style="font-size:1.2rem; margin:40px 0 14px">Recurso audiovisual</h3>
+    <div class="vid" data-yt="YO4pwpaH8Fo" data-title="5 consejos para mejorar su pensamiento crítico — Samantha Agoos (TED-Ed en Español)" data-dur="4:36" data-thumb="https://i.ytimg.com/vi/YO4pwpaH8Fo/hq720.jpg"></div>
+
+    <details class="acc" style="margin-top:26px">
+      <summary>Después de verlo: tres preguntas para ti</summary>
+      <div class="body">
+        <p>1. ¿Cuál de los cinco consejos del video aplicas menos en tu vida diaria y por qué?</p>
+        <p>2. ¿Recuerdas alguna vez en que aceptaste algo rápido porque confirmaba lo que ya pensabas?</p>
+        <p>3. ¿Qué cambia cuando aplicas el método al contenido que compartes en redes?</p>
+      </div>
+    </details>
+
+    <div class="activity">
+      <div class="act-head"><span class="badge">Actividad 1</span><h3>Criticar no es pensar crítico</h3></div>
+      <p class="hint">Clasifica cada frase según lo que realmente hace. Después de responder, aparecerá la explicación. <strong>Objetivo:</strong> distinguir la reacción de la disciplina.</p>
+      <div class="judge" id="act1" data-opts="Crítica destructiva|Pensamiento crítico"></div>
+      <div class="btn-row"><button class="btn-sm btn-mini" data-act="check1">Revisar mis respuestas</button></div>
+      <div class="feedback" id="fb1"></div>
+    </div>
+  </div>
+</section>
+<section id="m2" class="alt">
+  <div class="wrap">
+    <div class="module-head">
+      <div class="big">02</div>
+      <div class="txt">
+        <div class="eyebrow">Estación dos</div>
+        <h2>El hábito de preguntar</h2>
+        <p class="lead" style="margin-top:10px">La pregunta es la herramienta que convierte la curiosidad en conocimiento. Preguntar bien es una técnica, y se entrena.</p>
+        <span class="tag">Resultado: formula preguntas que llegan a la causa</span>
+      </div>
+    </div>
+
+    <div class="grid-2" style="align-items:start; gap:30px">
+      <div>
+        <p>Una pregunta cerrada puede recuperar un dato; una pregunta abierta puede ampliar la explicación. Una pregunta bien construida ayuda a delimitar el asunto, examinar razones y explorar posibles causas. No garantiza por sí sola encontrar una causa definitiva.</p>
+
+        <h3 style="font-size:1.05rem; margin:22px 0 10px">Tres niveles de pregunta</h3>
+        <div class="pillars" style="grid-template-columns:1fr; margin-top:0">
+          <div class="pillar"><h4><i></i>Nivel literal</h4><p>Recupera información explícita: ¿qué ocurrió?, ¿quién participó?, ¿cuándo sucedió? Permite comprender lo que se presenta antes de interpretarlo.</p></div>
+          <div class="pillar"><h4><i style="background:var(--teal)"></i>Nivel inferencial</h4><p>Relaciona datos y propone explicaciones posibles: ¿qué podría explicar lo ocurrido?, ¿qué relación existe entre estos hechos? Distingue siempre inferencias de datos observados.</p></div>
+          <div class="pillar"><h4><i style="background:var(--rose)"></i>Nivel crítico</h4><p>Examina razones, evidencias y perspectivas: ¿qué respalda esta afirmación?, ¿qué información falta?, ¿qué otra explicación sería posible?</p></div>
+        </div>
+        <div class="concept" style="margin-top:14px"><strong>¿Cómo reconocer una buena pregunta?</strong> Revisa su claridad, exactitud, precisión, relevancia, profundidad, lógica e imparcialidad. Una pregunta puede estar bien escrita y aun así ser poco relevante o partir de un supuesto no comprobado.</div>
+
+        <div class="quote">La técnica de los cinco porqués consiste en formular preguntas sucesivas sobre las respuestas anteriores para explorar posibles causas. Cinco preguntas no garantizan encontrar la causa raíz: las hipótesis deben contrastarse con información del contexto.</div>
+      </div>
+
+      <div>
+        <div class="card" style="background:linear-gradient(165deg,#f6fffd,#fff); border-color:rgba(14,147,132,.25)">
+          <h3 style="color:#0a6b60">Ejemplo aplicado</h3>
+          <p style="font-size:.9rem; margin-bottom:14px">Un compañero no entregó el trabajo grupal. La primera respuesta suele ser «es irresponsable». Los cinco porqués muestran otra cosa:</p>
+          <div style="font-size:.9rem; display:grid; gap:9px">
+            <div style="padding:10px 13px; background:#fff; border-left:3px solid #f0b6c2; border-radius:9px"><strong>¿Por qué no entregó?</strong> Porque no terminó su parte.</div>
+            <div style="padding:10px 13px; background:#fff; border-left:3px solid #e9a13b; border-radius:9px"><strong>¿Por qué no la terminó?</strong> Porque no entendió la consigna.</div>
+            <div style="padding:10px 13px; background:#fff; border-left:3px solid #d9c26a; border-radius:9px"><strong>¿Por qué no la entendió?</strong> Porque no preguntó en clase.</div>
+            <div style="padding:10px 13px; background:#fff; border-left:3px solid #8fc9a8; border-radius:9px"><strong>¿Por qué no preguntó?</strong> Porque temía quedar mal frente al grupo.</div>
+            <div style="padding:10px 13px; background:#fff; border-left:3px solid #0e9384; border-radius:9px"><strong>¿Por qué temía?</strong> Porque el grupo nunca acordó cómo se pedía ayuda.</div>
+          </div>
+          <p style="font-size:.87rem; color:var(--ink2); margin:14px 0 0"><strong>Posible explicación:</strong> podría faltar un acuerdo de comunicación. Esta hipótesis debe contrastarse con las personas involucradas y con otras explicaciones posibles; no es una causa demostrada.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.2rem; margin:40px 0 14px">Recursos audiovisuales</h3>
+    <div class="grid-2" style="gap:18px">
+      <div class="vid" data-yt="7C3XUy3BYug" data-title="Esta herramienta te ayudará a mejorar tu pensamiento crítico — Erick Wilberding (TED-Ed)" data-dur="5:26" data-thumb="https://i.ytimg.com/vi/7C3XUy3BYug/hq720.jpg"></div>
+      <div class="vid" data-yt="eYwssDlhPxs" data-title="La técnica de los 5 porqués: cómo descubrir las causas raíz" data-dur="5:12" data-thumb="https://i.ytimg.com/vi/eYwssDlhPxs/hq720.jpg"></div>
+    </div>
+
+    <div class="activity">
+      <div class="act-head"><span class="badge">Actividad 2</span><h3>Cinco porqués sobre un problema real</h3></div>
+      <p class="hint">Elige una situación concreta y delimitada. En cada paso, la nueva pregunta debe partir de la respuesta anterior. No se busca completar cinco casillas por obligación: se busca construir una explicación provisional que pueda contrastarse. <strong>La herramienta no demuestra una causa raíz ni evalúa automáticamente la verdad de tus respuestas.</strong></p>
+      <div style="display:grid; gap:10px; margin-bottom:14px">
+        <div><label class="fl">Problema que vas a analizar</label><input type="text" id="p2-prob" placeholder="Ej.: en mi grupo nadie entrega a tiempo"></div>
+        <div class="grid-3" style="gap:10px">
+          <div><label class="fl">Pregunta literal</label><textarea id="p2-literal" placeholder="¿Qué ocurrió? ¿Cuándo? ¿A quiénes? "></textarea></div>
+          <div><label class="fl">Pregunta inferencial</label><textarea id="p2-inferencial" placeholder="¿Qué podría explicar lo ocurrido? ¿Qué relación observo?"></textarea></div>
+          <div><label class="fl">Pregunta crítica</label><textarea id="p2-critica" placeholder="¿Qué evidencia respalda esa explicación? ¿Qué otra perspectiva falta?"></textarea></div>
+        </div>
+      </div>
+      <div class="chain" id="chain2"></div>
+      <p class="hint" style="margin:10px 0 0"><strong>Para cerrar:</strong> escribe una posible explicación y una acción concreta que permita explorarla o atenderla.</p>
+      <div style="display:grid; gap:10px; margin-top:12px">
+        <div><label class="fl">Posible causa o explicación</label><input type="text" id="p2-raiz" placeholder="Una posible explicación es... (debe comprobarse)"></div>
+        <div><label class="fl">Otra explicación posible</label><input type="text" id="p2-alternativa" placeholder="También podría ocurrir porque..."></div>
+        <div><label class="fl">¿Qué dato, observación o fuente te ayudaría a contrastar la explicación?</label><textarea id="p2-evidencia" placeholder="Podría revisar..., preguntar a..., comparar..."></textarea></div>
+        <div><label class="fl">Acción concreta relacionada con la explicación</label><input type="text" id="p2-accion" placeholder="Propongo probar... porque se relaciona con la posible causa."></div>
+      </div>
+      <div class="assess-panel">
+        <h4>Autoevaluación de la cadena</h4>
+        <p class="scale-note">Valora tu trabajo con evidencia. 0 = no lo cumple; 1 = parcialmente; 2 = claramente. Esta escala guía tu revisión: el sistema no interpreta el significado de tus textos.</p>
+        <div class="assess-grid">
+          <div class="assess-item"><label for="p2-r1">1. El problema está delimitado y las preguntas literal, inferencial y crítica corresponden a su nivel.</label><select id="p2-r1" class="p2-r"><option value="">Valorar</option><option value="0">0 · No</option><option value="1">1 · Parcialmente</option><option value="2">2 · Claramente</option></select></div>
+          <div class="assess-item"><label for="p2-r2">2. Las preguntas son claras, precisas y relevantes para comprender el problema.</label><select id="p2-r2" class="p2-r"><option value="">Valorar</option><option value="0">0 · No</option><option value="1">1 · Parcialmente</option><option value="2">2 · Claramente</option></select></div>
+          <div class="assess-item"><label for="p2-r3">3. Cada respuesta de la cadena sirve de punto de partida para el siguiente porqué.</label><select id="p2-r3" class="p2-r"><option value="">Valorar</option><option value="0">0 · No</option><option value="1">1 · Parcialmente</option><option value="2">2 · Claramente</option></select></div>
+          <div class="assess-item"><label for="p2-r4">4. La explicación considera condiciones o procesos y puede contrastarse con datos.</label><select id="p2-r4" class="p2-r"><option value="">Valorar</option><option value="1">1 · Parcialmente</option><option value="0">0 · No</option><option value="2">2 · Claramente</option></select></div>
+          <div class="assess-item"><label for="p2-r5">5. Consideré otra explicación, una perspectiva distinta y una acción relacionada.</label><select id="p2-r5" class="p2-r"><option value="">Valorar</option><option value="0">0 · No</option><option value="1">1 · Parcialmente</option><option value="2">2 · Claramente</option></select></div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-sm btn-mini" data-act="check2">Revisar mi análisis con la guía</button>
+        <button class="btn-sm btn-out" data-act="ejemplo2">Ver un ejemplo resuelto</button>
+      </div>
+      <div class="feedback" id="fb2"></div>
+    </div>
+  </div>
+</section>
+<section id="m3">
+  <div class="wrap">
+    <div class="module-head">
+      <div class="big">03</div>
+      <div class="txt">
+        <div class="eyebrow">Estación tres</div>
+        <h2>Construcción de respuestas</h2>
+        <p class="lead" style="margin-top:10px">Una respuesta fundamentada no es la que suena más convincente: es la que puedes sostener con evidencia y reconocer dónde se acaba.</p>
+        <span class="tag">Resultado: evalúa fuentes y argumenta con razones</span>
+      </div>
+    </div>
+
+    <p>Aquí es donde el pensamiento crítico deja de ser una actitud y se vuelve un producto. Construir una respuesta implica cinco operaciones: <strong>identificar la pregunta importante</strong>, <strong>buscar información confiable</strong>, <strong>separar hechos de opiniones</strong>, <strong>revisar los propios prejuicios</strong> y <strong>formular una conclusión con razones</strong>.</p>
+
+    <div class="grid-2" style="align-items:start; gap:26px; margin-top:26px">
+      <div class="card">
+        <h3 style="color:var(--teal)">Hecho vs. opinión</h3>
+        <p style="font-size:.93rem; margin-bottom:12px">Un <strong>hecho</strong> puede verificarse: alguien puede comprobarlo o refutarlo. Una <strong>opinión</strong> expresa una valoración y no se comprueba, se argumenta.</p>
+        <div style="font-size:.9rem; display:grid; gap:10px">
+          <div style="padding:12px 14px; border-radius:11px; background:var(--teal-soft); border:1px solid rgba(14,147,132,.25)"><strong>Hecho:</strong> «El informe se publicó el 3 de mayo de 2024.»</div>
+          <div style="padding:12px 14px; border-radius:11px; background:var(--rose-soft); border:1px solid rgba(217,83,106,.25)"><strong>Opinión:</strong> «El informe es el mejor del año.»</div>
+          <div style="padding:12px 14px; border-radius:11px; background:var(--amber-soft); border:1px solid rgba(233,161,59,.3)"><strong>Trampa frecuente:</strong> «Está demostrado que…» sin decir dónde. Suena a hecho, pero es una afirmación sin respaldo.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="border-color:rgba(233,161,59,.4)">
+          <h3>Semáforo de fuentes</h3>
+          <p style="font-size:.9rem; margin-bottom:14px">Antes de usar una fuente, pásala por estos cinco filtros.</p>
+          <div style="display:grid; gap:9px; font-size:.89rem">
+            <div style="display:flex; gap:11px"><span style="flex:0 0 22px;height:22px;border-radius:7px;background:#d9536a;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800">1</span><div><strong>Autoría.</strong> ¿Quién firma? ¿Tiene nombre, trayectoria, contacto?</div></div>
+            <div style="display:flex; gap:11px"><span style="flex:0 0 22px;height:22px;border-radius:7px;background:#e9a13b;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800">2</span><div><strong>Fecha.</strong> Un dato de hace diez años puede estar desactualizado.</div></div>
+            <div style="display:flex; gap:11px"><span style="flex:0 0 22px;height:22px;border-radius:7px;background:#7d5cc0;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800">3</span><div><strong>Propósito.</strong> ¿Informa, vende, convence o entretiene? El interés modifica el mensaje.</div></div>
+            <div style="display:flex; gap:11px"><span style="flex:0 0 22px;height:22px;border-radius:7px;background:#0e9384;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800">4</span><div><strong>Evidencia.</strong> ¿Cita datos, documentos, estudios? ¿Se pueden consultar?</div></div>
+            <div style="display:flex; gap:11px"><span style="flex:0 0 22px;height:22px;border-radius:7px;background:#4a2b7a;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800">5</span><div><strong>Contraste.</strong> ¿Otra fuente independiente sostiene lo mismo?</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.2rem; margin:40px 0 6px">Cuando la desinformación parece noticia</h3>
+    <p style="font-size:.95rem; color:var(--ink2); max-width:48em">El caso de los mensajes que advertían sobre supuestos carros bomba en Bogotá es un ejemplo típico: una cadena sin autor, sin fecha verificable y con un tono alarmante que empuja a compartir antes de comprobar. La alarma emocional es, precisamente, la señal para detenerse.</p>
+
+    <div class="vid" data-yt="pN9EB_1HeAk" data-title="¿Qué son las fake news? Cómo luchar contra la desinformación" data-dur="8:46" data-thumb="https://i.ytimg.com/vi/pN9EB_1HeAk/hq720.jpg" style="margin-top:16px"></div>
+
+    <div class="activity">
+      <div class="act-head"><span class="badge">Actividad 3</span><h3>Hecho, opinión o afirmación dudosa</h3></div>
+      <p class="hint">Clasifica cada enunciado. Si el enunciado <em>parece</em> un hecho pero no indica cómo comprobarlo, es una afirmación dudosa.</p>
+      <div class="judge" id="act3" data-opts="Hecho verificable|Opinión|Afirmación dudosa"></div>
+      <div class="btn-row"><button class="btn-sm btn-mini" data-act="check3">Revisar mis clasificaciones</button></div>
+      <div class="feedback" id="fb3"></div>
+    </div>
+
+    <div class="activity">
+      <div class="act-head"><span class="badge">Actividad 4</span><h3>Tu respuesta fundamentada</h3></div>
+      <p class="hint">Examina una afirmación concreta. No basta con escribir qué piensas: debes identificar una fuente, señalar qué evidencia aporta, explicar cómo esa evidencia se relaciona con la afirmación y delimitar qué puede concluirse. <strong>La guía no califica automáticamente la calidad semántica de tus argumentos:</strong> te ayuda a revisarlos con criterios explícitos.</p>
+      <div style="display:grid; gap:12px">
+        <div><label class="fl">Afirmación que vas a examinar</label><input type="text" id="p3-afirm" placeholder="Ej.: «Los jóvenes ya no leen.»"></div>
+        <div><label class="fl">Fuente que consultaste (autor o institución, título y enlace/referencia)</label><textarea id="p3-fuente" placeholder="Identifica una fuente concreta. Si aún no la has consultado, escribe qué fuente sería pertinente y marca que está pendiente."></textarea></div>
+        <div><label class="fl">Evidencia o dato específico que aporta la fuente</label><textarea id="p3-evid" placeholder="¿Qué dato, documento o resultado encontraste? Evita escribir solo ‘hay estudios’."></textarea></div>
+        <div><label class="fl">Razonamiento: ¿cómo apoya o contradice esa evidencia la afirmación?</label><textarea id="p3-razon" placeholder="Este dato se relaciona con la afirmación porque..."></textarea></div>
+        <div><label class="fl">Tu conclusión provisional</label><textarea id="p3-conc" placeholder="Con la evidencia disponible, puedo concluir que..."></textarea></div>
+        <div><label class="fl">Límite o información que falta</label><textarea id="p3-lim" placeholder="No puedo afirmar todavía... porque necesitaría..."></textarea></div>
+      </div>
+      <div class="assess-panel">
+        <h4>Lista de comprobación del argumento</h4>
+        <p class="scale-note">Marca 0 = no, 1 = parcialmente, 2 = sí. Antes de marcar, comprueba el texto que escribiste. El resultado es una autoevaluación guiada, no una calificación automática de la calidad del argumento.</p>
+        <div class="assess-grid">
+          <div class="assess-item"><label for="p4-r1">1. La afirmación es concreta y se puede examinar.</label><select id="p4-r1" class="p4-r"><option value="">Valorar</option><option value="0">0 · No</option><option value="1">1 · Parcialmente</option><option value="2">2 · Sí</option></select></div>
+          <div class="assess-item"><label for="p4-r2">2. Identifiqué una fuente específica y pertinente.</label><select id="p4-r2" class="p4-r"><option value="">Valorar</option><option value="0">0 · No</option><option value="1">1 · Parcialmente</option><option value="2">2 · Sí</option></select></div>
+          <div class="assess-item"><label for="p4-r3">3. Señalé un dato o evidencia verificable, no solo una opinión.</label><select id="p4-r3" class="p4-r"><option value="">Valorar</option><option value="0">0 · No</option><option value="1">1 · Parcialmente</option><option value="2">2 · Sí</option></select></div>
+          <div class="assess-item"><label for="p4-r4">4. Expliqué la relación lógica entre evidencia y conclusión.</label><select id="p4-r4" class="p4-r"><option value="">Valorar</option><option value="0">0 · No</option><option value="1">1 · Parcialmente</option><option value="2">2 · Sí</option></select></div>
+          <div class="assess-item"><label for="p4-r5">5. Reconocí límites, incertidumbre o información faltante.</label><select id="p4-r5" class="p4-r"><option value="">Valorar</option><option value="0">0 · No</option><option value="1">1 · Parcialmente</option><option value="2">2 · Sí</option></select></div>
+        </div>
+      </div>
+      <div class="btn-row"><button class="btn-sm btn-mini" data-act="check4">Revisar mi argumento con la guía</button></div>
+      <div class="feedback" id="fb4"></div>
+    </div>
+  </div>
+</section>
+<section id="m4" class="alt">
+  <div class="wrap">
+    <div class="module-head">
+      <div class="big">04</div>
+      <div class="txt">
+        <div class="eyebrow">Estación cuatro</div>
+        <h2>Creatividad aplicada</h2>
+        <p class="lead" style="margin-top:10px">La creatividad no es un don que se tiene o no se tiene: es una capacidad que se entrena con método, y que solo sirve cuando se encuentra con el pensamiento crítico.</p>
+        <span class="tag">Resultado: genera alternativas y las elige con criterio</span>
+      </div>
+    </div>
+
+    <div class="grid-2" style="align-items:start; gap:30px">
+      <div>
+        <div class="concept" style="background:linear-gradient(135deg,#fff6ec,#fffaf3); border-color:rgba(233,161,59,.35); border-left-color:var(--amber)">
+          <strong>Idea clave.</strong> Crear es <em>generar opciones</em>; decidir es <em>evaluarlas</em>. Si generas sin evaluar, tienes ocurrencias. Si evalúas sin generar, tienes parálisis. La creatividad aplicada necesita las dos fases, y en ese orden: primero divergir, después converger.
+        </div>
+
+        <h3 style="font-size:1.05rem; margin:24px 0 10px">Del problema a la solución, en cuatro movimientos</h3>
+        <div class="objectives" style="gap:10px">
+          <div class="obj" style="padding:15px 17px"><div class="mark" style="flex:0 0 32px;height:32px;border-radius:10px;font-size:13px">A</div><div><h4 style="font-size:.94rem">Formular el problema como pregunta</h4><p style="font-size:.87rem">«¿Cómo podríamos…?» Un problema bien planteado ya contiene media solución.</p></div></div>
+          <div class="obj" style="padding:15px 17px"><div class="mark" style="flex:0 0 32px;height:32px;border-radius:10px;font-size:13px;background:linear-gradient(135deg,#0e9384,#3fc0a9)">B</div><div><h4 style="font-size:.94rem">Generar sin juzgar</h4><p style="font-size:.87rem">Lluvia de ideas: cantidad antes que calidad. Toda idea se anota, ninguna se descarta todavía.</p></div></div>
+          <div class="obj" style="padding:15px 17px"><div class="mark" style="flex:0 0 32px;height:32px;border-radius:10px;font-size:13px;background:linear-gradient(135deg,#c9762a,#e9a13b)">C</div><div><h4 style="font-size:.94rem">Evaluar con criterios explícitos</h4><p style="font-size:.87rem">Matriz de decisión: cada alternativa se mide con los mismos criterios y un peso acordado.</p></div></div>
+          <div class="obj" style="padding:15px 17px"><div class="mark" style="flex:0 0 32px;height:32px;border-radius:10px;font-size:13px;background:linear-gradient(135deg,#b23a55,#d9536a)">D</div><div><h4 style="font-size:.94rem">Prototipar y probar</h4><p style="font-size:.87rem">Convertir la idea elegida en algo mínimo que se pueda mostrar y corregir.</p></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>La creatividad también se critica</h3>
+        <p style="font-size:.93rem">Una idea creativa sin pensamiento crítico produce soluciones que nadie necesita. Algunas preguntas de control:</p>
+        <ul style="font-size:.9rem; color:var(--ink2); padding-left:20px; margin:12px 0 0">
+          <li style="margin-bottom:8px">¿Esto resuelve el problema real o el que yo imaginé?</li>
+          <li style="margin-bottom:8px">¿A quién beneficia y a quién deja fuera?</li>
+          <li style="margin-bottom:8px">¿Qué supuestos estoy dando por ciertos sin comprobar?</li>
+          <li style="margin-bottom:8px">¿Cómo sabría, en dos semanas, si funcionó?</li>
+          <li>¿Puedo hacer una versión más pequeña para probarla antes?</li>
+        </ul>
+        <div style="margin-top:16px; padding:14px 16px; border-radius:12px; background:var(--violet-soft); border:1px solid rgba(125,92,192,.25); font-size:.88rem; color:#3c2a63">
+          <strong>Técnicas para generar:</strong> lluvia de ideas, SCAMPER, analogías, invertir el problema («¿cómo lo empeoraría?»), y los cinco porqués para no crear sobre un diagnóstico equivocado.
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.2rem; margin:40px 0 14px">Recurso audiovisual</h3>
+    <div class="vid" data-yt="i-htv81L04g" data-title="¿Cómo desarrollar el pensamiento crítico? — CuriosaMente" data-dur="8:11" data-thumb="https://i.ytimg.com/vi/i-htv81L04g/hq720.jpg"></div>
+
+    <div class="activity" id="actividad5">
+      <div class="act-head"><span class="badge">Actividad 5 · 8 min</span><h3>Compara tres alternativas</h3></div>
+      <p class="hint">La matriz te ayuda a comparar opciones con los mismos criterios. No hay que hacer cálculos manuales: selecciona la importancia de cada criterio y valora cada alternativa. El OVA calcula el resultado.</p>
+      <div class="concept" style="margin:12px 0 16px;border-left:4px solid var(--teal)"><strong>Situación de práctica</strong><br>Imagina que quieres facilitar que estudiantes conozcan información útil antes de formar un equipo académico. Compara estas opciones: <b>A)</b> perfiles con intereses y fortalezas; <b>B)</b> grupos sugeridos por afinidad; <b>C)</b> foro abierto para presentarse.</div>
+      <div class="concept" style="margin:12px 0 16px"><strong>Cómo usarla en tres pasos</strong><ol style="margin:8px 0 0 20px"><li>Indica cuánto importa cada criterio: 1 = poco, 2 = medio, 3 = mucho.</li><li>Valora cada alternativa: 1 = responde poco, 5 = responde muy bien.</li><li>Compara los resultados y explica tu decisión. La puntuación orienta; no decide por ti.</li></ol></div>
+      <div class="matrix-simple">
+        <div class="matrix-criterion"><div><strong>1. Impacto</strong><p>¿Ayuda a conocer intereses, fortalezas o disponibilidad?</p></div><label>Importancia<select class="peso" data-c="0"><option value="1">1 · Poco</option><option value="2">2 · Medio</option><option value="3" selected>3 · Mucho</option></select></label>
+          <div class="matrix-ratings"><label> A · Perfiles<select class="punt" data-a="0" data-c="0"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option></select></label><label>B · Afinidad<select class="punt" data-a="1" data-c="0"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option></select></label><label>C · Foro<select class="punt" data-a="2" data-c="0"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label></div></div>
+        <div class="matrix-criterion"><div><strong>2. Facilidad</strong><p>¿Se podría poner en marcha con recursos y tiempo razonables?</p></div><label>Importancia<select class="peso" data-c="1"><option value="1">1 · Poco</option><option value="2" selected>2 · Medio</option><option value="3">3 · Mucho</option></select></label>
+          <div class="matrix-ratings"><label>A · Perfiles<select class="punt" data-a="0" data-c="1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label><label>B · Afinidad<select class="punt" data-a="1" data-c="1"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option></select></label><label>C · Foro<select class="punt" data-a="2" data-c="1"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option></select></label></div></div>
+        <div class="matrix-criterion"><div><strong>3. Sostenibilidad</strong><p>¿Sería posible mantener y actualizar esta opción?</p></div><label>Importancia<select class="peso" data-c="2"><option value="1">1 · Poco</option><option value="2" selected>2 · Medio</option><option value="3">3 · Mucho</option></select></label>
+          <div class="matrix-ratings"><label>A · Perfiles<select class="punt" data-a="0" data-c="2"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option></select></label><label>B · Afinidad<select class="punt" data-a="1" data-c="2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label><label>C · Foro<select class="punt" data-a="2" data-c="2"><option>1</option><option>2</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></label></div></div>
+      </div>
+      <div class="matrix-results"><strong>Resultado de la comparación</strong><div class="grid-3" style="gap:10px;margin-top:10px"><div class="card"><span>Alternativa A</span><div class="score" id="tA">—</div></div><div class="card"><span>Alternativa B</span><div class="score" id="tB">—</div></div><div class="card"><span>Alternativa C</span><div class="score" id="tC">—</div></div></div><div class="winner" id="win" aria-live="polite"></div></div>
+      <div class="grid-2" style="gap:12px;margin-top:16px"><div><label class="fl" for="matriz-eleccion">¿Cuál alternativa elegirías?</label><select id="matriz-eleccion"><option value="">Selecciona una alternativa</option><option value="A">A · Perfiles</option><option value="B">B · Grupos por afinidad</option><option value="C">C · Foro abierto</option></select></div><div><label class="fl" for="matriz-razon">¿Por qué?</label><textarea id="matriz-razon" placeholder="Menciona el criterio más importante y el resultado que te ayudó a decidir."></textarea></div></div>
+      <div style="margin-top:10px"><label class="fl" for="matriz-prueba">¿Qué necesitarías comprobar antes de decir que funciona?</label><textarea id="matriz-prueba" placeholder="Ej.: probar una versión sencilla con un pequeño grupo y recoger sus comentarios."></textarea></div>
+      <p class="hint" style="margin:12px 0 0"><strong>Recuerda:</strong> si cambias la importancia de los criterios o las valoraciones, puede cambiar el resultado. Las puntuaciones son tu juicio para este ejercicio, no datos de una investigación.</p>
+      <div class="btn-row"><button class="btn-sm btn-out" data-act="reset-matriz">Restablecer ejemplo</button></div>
+    </div>
+  </div>
+</section>
+<section id="caso">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Caso integrador</div>
+      <h2>ConectaU: de la queja al prototipo</h2>
+      <p class="lead">Este caso integra los cuatro ejes del OVA mediante un ejemplo del proceso de diseño de ConectaU, un prototipo elaborado por el equipo para explorar posibles compañeros de trabajo académico.</p>
+    </div>
+
+    <div class="grid-2" style="gap:26px; align-items:start">
+      <div class="card" style="background:linear-gradient(165deg,#f4efff,#fff)">
+        <div class="num" style="color:var(--violet2)">EJE 1 · OBSERVAR Y CUESTIONAR</div>
+        <h3 style="margin-top:8px">La queja inicial no era el problema</h3>
+        <p style="font-size:.93rem">El punto de partida fue una necesidad de diseño identificada por el equipo: contar con más información para explorar posibles compañeros de trabajo académico. Se formuló como hipótesis que conocer intereses, fortalezas y disponibilidad podría facilitar la conformación de equipos. No se presenta como un problema generalizado ni como un hallazgo validado con estudiantes.</p>
+      </div>
+      <div class="card" style="background:linear-gradient(165deg,#eefaf7,#fff)">
+        <div class="num" style="color:var(--teal)">EJE 2 · PREGUNTAR PARA COMPRENDER</div>
+        <h3 style="margin-top:8px">Preguntar para orientar el diseño</h3>
+        <p style="font-size:.93rem">El equipo exploró preguntas sobre qué información sería útil para conocer a posibles compañeros y cómo podrían hacerse visibles intereses, fortalezas y disponibilidad. La pregunta de diseño fue: <strong>¿cómo podríamos facilitar que los estudiantes conozcan esos aspectos antes de conformar un equipo?</strong></p>
+      </div>
+      <div class="card" style="background:linear-gradient(165deg,#fffaf0,#fff)">
+        <div class="num" style="color:var(--amber)">EJE 3 · ANALIZAR Y FUNDAMENTAR</div>
+        <h3 style="margin-top:8px">Buscar antes de suponer</h3>
+        <p style="font-size:.93rem">En esta etapa se distinguieron los elementos definidos por el equipo de los supuestos que requerirían validación. No se realizaron entrevistas ni pruebas con estudiantes reales, por lo que la necesidad se mantuvo como hipótesis de diseño y no como conclusión generalizable.</p>
+      </div>
+      <div class="card" style="background:linear-gradient(165deg,#fdf2f5,#fff)">
+        <div class="num" style="color:var(--rose)">EJE 4 · CREAR Y DECIDIR</div>
+        <h3 style="margin-top:8px">Generar, comparar, prototipar</h3>
+        <p style="font-size:.93rem">La lluvia de ideas permitió considerar alternativas como grupos por afinidad, un foro abierto y perfiles con intereses y fortalezas. La matriz comparó las opciones según criterios y ponderaciones definidos por el equipo. La alternativa de perfiles fue seleccionada en ese ejercicio; el resultado depende de los criterios elegidos y no demuestra que sea la única o la mejor solución posible.</p>
+      </div>
+    </div>
+
+    <div class="concept" style="margin-top:18px"><strong>Alcance y límites del caso.</strong> ConectaU fue un prototipo elaborado por el equipo con perfiles ficticios. La disponibilidad se representa mediante franjas generales; no hay sincronización de agendas ni validación con estudiantes reales. Por tanto, el caso ilustra un proceso de diseño y no demuestra la eficacia de la solución.</div>
+
+    <div class="concept" style="margin-top:30px; background:linear-gradient(135deg,#f4efff,#fdf6ec); border-left-color:var(--amber)">
+      <strong>Lo que este caso enseña.</strong> Los cuatro ejes se conectan en un proceso de diseño. En este caso, el equipo formuló una necesidad, exploró preguntas, distinguió supuestos de información disponible, comparó alternativas y elaboró un prototipo. El caso ilustra decisiones del equipo, no una validación de eficacia con usuarios.
+    </div>
+
+    <div class="activity" id="actividad6">
+      <div class="act-head"><span class="badge">Actividad 6 · 7 min</span><h3>Diseña una prueba pequeña para tu solución</h3></div>
+      <p class="hint">Ahora vas a convertir una idea en una prueba sencilla. No necesitas construir el producto completo: define una forma pequeña, segura y observable de averiguar si tu propuesta merece seguir desarrollándose.</p>
+      <div class="test-flow">
+        <div class="test-step"><span class="step-no">1</span><div><h4>Delimita la situación</h4><p>Describe qué quieres mejorar, sin incluir todavía la solución.</p><input type="text" id="p6-1" placeholder="Ej.: me cuesta organizar las tareas de un trabajo en equipo."></div></div>
+        <div class="test-step"><span class="step-no">2</span><div><h4>Piensa en opciones y elige una</h4><p>Anota tres alternativas diferentes y explica cuál probarías primero.</p><textarea id="p6-2" rows="3" placeholder="A) ...&#10;B) ...&#10;C) ..."></textarea><label class="fl" for="p6-3">Mi elección y el criterio que utilicé</label><textarea id="p6-3" rows="2" placeholder="Elijo la opción ... porque ... (por ejemplo: utilidad, facilidad o costo)."></textarea></div></div>
+        <div class="test-step"><span class="step-no">3</span><div><h4>Diseña una prueba mínima</h4><p>Define qué harás en pequeño, con quién o en qué contexto y durante cuánto tiempo.</p><textarea id="p6-4" rows="3" placeholder="Probaré ... con ... durante ... No necesito recopilar datos personales; observaré ..."></textarea></div></div>
+        <div class="test-step"><span class="step-no">4</span><div><h4>Decide qué observarás y qué harás después</h4><p>Elige un indicador observable y una señal que te ayude a decidir si continúas, ajustas o descartas la idea.</p><textarea id="p6-5" rows="3" placeholder="Observaré/contaré ... Consideraré que vale la pena continuar si ... Si no ocurre, entonces ..."></textarea></div></div>
+      </div>
+      <div class="assess-panel" style="margin-top:18px"><h4>Comprueba si tu prueba está bien diseñada</h4><p class="scale-note">Marca cada punto después de completar el plan. 0 = falta; 1 = está parcialmente definido; 2 = está claro y es comprobable.</p><div class="assess-grid">
+        <div class="assess-item"><label for="p6-r1">1. La situación está delimitada y no presupone una solución.</label><select id="p6-r1" class="p6-r"><option value="">Elige 0, 1 o 2</option><option value="0">0 · Falta</option><option value="1">1 · Parcial</option><option value="2">2 · Claro</option></select></div>
+        <div class="assess-item"><label for="p6-r2">2. Las tres alternativas son diferentes.</label><select id="p6-r2" class="p6-r"><option value="">Elige 0, 1 o 2</option><option value="0">0 · Falta</option><option value="1">1 · Parcial</option><option value="2">2 · Claro</option></select></div>
+        <div class="assess-item"><label for="p6-r3">3. La elección tiene un criterio explícito.</label><select id="p6-r3" class="p6-r"><option value="">Elige 0, 1 o 2</option><option value="0">0 · Falta</option><option value="1">1 · Parcial</option><option value="2">2 · Claro</option></select></div>
+        <div class="assess-item"><label for="p6-r4">4. La prueba es pequeña, segura y realizable.</label><select id="p6-r4" class="p6-r"><option value="">Elige 0, 1 o 2</option><option value="0">0 · Falta</option><option value="1">1 · Parcial</option><option value="2">2 · Claro</option></select></div>
+        <div class="assess-item"><label for="p6-r5">5. Hay indicador, plazo y decisión posterior definidos.</label><select id="p6-r5" class="p6-r"><option value="">Elige 0, 1 o 2</option><option value="0">0 · Falta</option><option value="1">1 · Parcial</option><option value="2">2 · Claro</option></select></div>
+      </div><div class="btn-row"><button class="btn-sm btn-mini" data-act="check6">Revisar mi diseño de prueba</button></div><div class="feedback" id="fb6" aria-live="polite"></div></div>
+      <p class="hint" style="margin-top:12px">Una prueba pequeña no demuestra que la solución funcione en todos los contextos. Sirve para obtener una primera evidencia y decidir el siguiente paso.</p>
+    </div>
+    </div>
+  </div>
+</section>
+<section id="evaluacion" class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Evaluación final</div>
+      <h2>Ocho preguntas para cerrar</h2>
+      <p class="lead">Cada pregunta mide un resultado de aprendizaje distinto. Puedes responder, revisar la retroalimentación y volver a intentarlo: el objetivo es entender, no acertar de una.</p>
+    </div>
+
+    <div class="quizbox" id="quiz">
+      <div class="q" data-q="0">
+        <div class="qn">Pregunta 1 · Curiosidad y cuestionamiento</div>
+        <div class="qt">¿Cuál de estas afirmaciones describe mejor el pensamiento crítico?</div>
+        <div class="opts-col">
+          <label class="opt"><input type="radio" name="q0" value="0"><span>Señalar los errores de los demás con argumentos firmes.</span></label>
+          <label class="opt"><input type="radio" name="q0" value="1"><span>Examinar una afirmación buscando evidencias y reconociendo los propios prejuicios antes de aceptarla.</span></label>
+          <label class="opt"><input type="radio" name="q0" value="2"><span>Dudar de todo de manera permanente y no llegar a conclusiones.</span></label>
+          <label class="opt"><input type="radio" name="q0" value="3"><span>Confiar en la intuición, porque la experiencia propia es la mejor fuente.</span></label>
+        </div>
+        <div class="qfb" data-ok="1">El pensamiento crítico es un método de examen, no una reacción. Criticar sin examinar o dudar sin concluir son dos extremos que no lo describen.</div>
+      </div>
+
+      <div class="q" data-q="1">
+        <div class="qn">Pregunta 2 · Hábito de preguntar</div>
+        <div class="qt">En la técnica de los cinco porqués, cada nueva pregunta debe…</div>
+        <div class="opts-col">
+          <label class="opt"><input type="radio" name="q1" value="0"><span>Repetir el problema original con otras palabras.</span></label>
+          <label class="opt"><input type="radio" name="q1" value="1"><span>Referirse a la respuesta anterior, para descender un nivel de causa.</span></label>
+          <label class="opt"><input type="radio" name="q1" value="2"><span>Buscar un culpable entre las personas involucradas.</span></label>
+          <label class="opt"><input type="radio" name="q1" value="3"><span>Ampliar el tema hacia otros problemas relacionados.</span></label>
+        </div>
+        <div class="qfb" data-ok="1">Si cada «¿por qué?» vuelve al problema inicial, no se avanza: se gira en círculo. La cadena solo funciona si cada respuesta encadena con la siguiente.</div>
+      </div>
+
+      <div class="q" data-q="2">
+        <div class="qn">Pregunta 3 · Construcción de respuestas</div>
+        <div class="qt">«Ese documental es el mejor del año» es un ejemplo de…</div>
+        <div class="opts-col">
+          <label class="opt"><input type="radio" name="q2" value="0"><span>Un hecho verificable.</span></label>
+          <label class="opt"><input type="radio" name="q2" value="1"><span>Una opinión.</span></label>
+          <label class="opt"><input type="radio" name="q2" value="2"><span>Una cita textual.</span></label>
+          <label class="opt"><input type="radio" name="q2" value="3"><span>Una evidencia estadística.</span></label>
+        </div>
+        <div class="qfb" data-ok="1">«Mejor» es una valoración: no se comprueba, se argumenta. Si dijera «fue visto por 4 millones de personas», eso sí sería un hecho verificable.</div>
+      </div>
+
+      <div class="q" data-q="3">
+        <div class="qn">Pregunta 4 · Evaluación de fuentes</div>
+        <div class="qt">Recibes una cadena que alerta sobre un peligro inmediato, sin autor ni fecha. ¿Cuál es la primera acción crítica?</div>
+        <div class="opts-col">
+          <label class="opt"><input type="radio" name="q3" value="0"><span>Compartirla: si es verdad, es mejor que la gente lo sepa.</span></label>
+          <label class="opt"><input type="radio" name="q3" value="1"><span>Ignorarla: casi todo lo que circula por chat es falso.</span></label>
+          <label class="opt"><input type="radio" name="q3" value="2"><span>Detenerse y verificar la fuente en medios o canales oficiales antes de reenviarla.</span></label>
+          <label class="opt"><input type="radio" name="q3" value="3"><span>Preguntar en el grupo quién la envió primero.</span></label>
+        </div>
+        <div class="qfb" data-ok="2">Ni compartir por precaución ni descartar por escepticismo: verificar. La alarma emocional es justamente la señal para detenerse.</div>
+      </div>
+
+      <div class="q" data-q="4">
+        <div class="qn">Pregunta 5 · Creatividad aplicada</div>
+        <div class="qt">En el proceso creativo, ¿cuál es el orden más productivo?</div>
+        <div class="opts-col">
+          <label class="opt"><input type="radio" name="q4" value="0"><span>Evaluar cada idea mientras se genera, para no perder tiempo.</span></label>
+          <label class="opt"><input type="radio" name="q4" value="1"><span>Generar muchas opciones sin juzgar y después evaluarlas con criterios explícitos.</span></label>
+          <label class="opt"><input type="radio" name="q4" value="2"><span>Elegir la primera idea que aparezca, porque suele ser la más auténtica.</span></label>
+          <label class="opt"><input type="radio" name="q4" value="3"><span>Buscar una solución ya existente y adaptarla sin cambios.</span></label>
+        </div>
+        <div class="qfb" data-ok="1">Primero divergir, después converger. Juzgar mientras se genera bloquea la cantidad de ideas; generar sin juzgar después produce ocurrencias sin rumbo.</div>
+      </div>
+
+      <div class="q" data-q="5">
+        <div class="qn">Pregunta 6 · Creatividad aplicada</div>
+        <div class="qt">¿Para qué sirve una matriz de decisión?</div>
+        <div class="opts-col">
+          <label class="opt"><input type="radio" name="q5" value="0"><span>Para elegir siempre la alternativa más barata.</span></label>
+          <label class="opt"><input type="radio" name="q5" value="1"><span>Para comparar alternativas con los mismos criterios y pesos, y hacer visible por qué se elige una.</span></label>
+          <label class="opt"><input type="radio" name="q5" value="2"><span>Para justificar una decisión que ya se había tomado.</span></label>
+          <label class="opt"><input type="radio" name="q5" value="3"><span>Para generar nuevas ideas cuando no hay ninguna.</span></label>
+        </div>
+        <div class="qfb" data-ok="1">Su valor no está en el número final, sino en hacer explícitos los criterios. Si cambias los pesos y cambia la ganadora, descubres qué estabas valorando de verdad.</div>
+      </div>
+
+      <div class="q" data-q="6">
+        <div class="qn">Pregunta 7 · Actitud reflexiva</div>
+        <div class="qt">Reconocer los propios prejuicios sirve para…</div>
+        <div class="opts-col">
+          <label class="opt"><input type="radio" name="q6" value="0"><span>Eliminarlos por completo y alcanzar la objetividad total.</span></label>
+          <label class="opt"><input type="radio" name="q6" value="1"><span>Entender cómo influyen en lo que aceptamos como verdad, y corregir el rumbo.</span></label>
+          <label class="opt"><input type="radio" name="q6" value="2"><span>Justificar las conclusiones propias con más seguridad.</span></label>
+          <label class="opt"><input type="radio" name="q6" value="3"><span>Evitar discutir con quienes piensan distinto.</span></label>
+        </div>
+        <div class="qfb" data-ok="1">Nadie es neutro del todo. Reconocerlo no elimina el prejuicio, pero permite detectarlo cuando está operando y ajustar el juicio.</div>
+      </div>
+
+      <div class="q" data-q="7">
+        <div class="qn">Pregunta 8 · Integración</div>
+        <div class="qt">¿Qué relación hay entre pensamiento crítico y creatividad?</div>
+        <div class="opts-col">
+          <label class="opt"><input type="radio" name="q7" value="0"><span>Son opuestos: uno analiza y la otra imagina.</span></label>
+          <label class="opt"><input type="radio" name="q7" value="1"><span>Son independientes: se puede tener una sin la otra.</span></label>
+          <label class="opt"><input type="radio" name="q7" value="2"><span>Se necesitan: el pensamiento crítico evita crear sobre problemas mal diagnosticados, y la creatividad evita quedarse en el análisis.</span></label>
+          <label class="opt"><input type="radio" name="q7" value="3"><span>La creatividad reemplaza al pensamiento crítico cuando hay experiencia.</span></label>
+        </div>
+        <div class="qfb" data-ok="2">Es la tesis de fondo del curso: sin crítica, la creatividad produce soluciones que nadie necesita; sin creatividad, la crítica se queda en diagnóstico.</div>
+      </div>
+    </div>
+
+    <div class="btn-row" style="margin-top:22px">
+      <button class="btn-sm btn-mini" data-act="quiz">Calificar mi evaluación</button>
+      <button class="btn-sm btn-out" data-act="reset-quiz">Intentar de nuevo</button>
+    </div>
+    <div class="result" id="quizres">
+      <div class="pct" id="quizpct">0%</div>
+      <p id="quizmsg"></p>
+    </div>
+  </div>
+</section>
+<section id="auto">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Autoevaluación</div>
+      <h2>¿En qué punto estás?</h2>
+      <p class="lead">Valora tu propio proceso con honestidad. Las respuestas permanecen en esta sesión del navegador y puedes descargarlas; no se guardan automáticamente en una cuenta.</p>
+    </div>
+
+    <div class="card" style="max-width:900px">
+      <div class="selfrow"><div class="nm">Reconozco cuándo estoy criticando y cuándo estoy examinando</div><input type="range" min="0" max="100" value="50" class="self"><span class="val">50</span></div>
+      <div class="selfrow"><div class="nm">Verifico la información antes de compartirla</div><input type="range" min="0" max="100" value="50" class="self"><span class="val">50</span></div>
+      <div class="selfrow"><div class="nm">Formulo preguntas que llegan a la causa, no solo al síntoma</div><input type="range" min="0" max="100" value="50" class="self"><span class="val">50</span></div>
+      <div class="selfrow"><div class="nm">Distingo hechos de opiniones cuando discuto algo</div><input type="range" min="0" max="100" value="50" class="self"><span class="val">50</span></div>
+      <div class="selfrow"><div class="nm">Reconozco mis propios prejuicios al analizar una situación</div><input type="range" min="0" max="100" value="50" class="self"><span class="val">50</span></div>
+      <div class="selfrow"><div class="nm">Genero varias alternativas antes de decidir</div><input type="range" min="0" max="100" value="50" class="self"><span class="val">50</span></div>
+      <div class="selfrow"><div class="nm">Evalúo mis ideas con criterios explícitos y no solo por intuición</div><input type="range" min="0" max="100" value="50" class="self"><span class="val">50</span></div>
+      <div style="margin-top:22px; display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between">
+        <div class="pct" id="selfavg" style="font-family:'Fraunces',serif; font-size:2.6rem; font-weight:700; color:var(--violet); line-height:1">50%</div>
+        <p id="selfmsg" style="font-size:.93rem; color:var(--ink2); margin:0; flex:1; min-width:240px">Ajusta las barras para ver tu perfil.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:22px; max-width:900px; background:linear-gradient(135deg,#f4efff,#fff)">
+      <h3>Compromiso de una semana</h3>
+      <p style="font-size:.93rem">Elige una sola acción y sostenla siete días. La competencia no se adquiere leyendo sobre ella, se adquiere repitiéndola.</p>
+      <div style="display:grid; gap:10px; margin-top:12px">
+        <div><label class="fl">Mi acción para esta semana</label><input type="text" id="compromiso" placeholder="Ej.: antes de reenviar algo, busco la fuente original"></div>
+        <div><label class="fl">Cómo sabré que lo cumplí</label><input type="text" id="comocumplo" placeholder="Ej.: anotaré cada vez que verifico antes de compartir"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-sm btn-out" data-act="export">Descargar mis respuestas</button>
+      </div>
+      <p class="hint" style="margin:12px 0 0">Se descarga un archivo de texto con todo lo que escribiste y tu resultado en la evaluación. La descarga se genera en tu navegador. Los recursos externos pueden comunicarse con sus proveedores.</p>
+    </div>
+  </div>
+</section>
+<section id="coevaluacion">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Coevaluación</div>
+      <h2>Revisar el recurso con criterios compartidos</h2>
+      <p class="lead">Esta actividad sirve para obtener una revisión independiente del OVA antes de entregarlo. Un compañero aplica los mismos cinco criterios de la rúbrica de la Actividad 4, registra evidencias y señala mejoras. Así el equipo puede demostrar que revisó el recurso, detectar ajustes y conservar un registro de la valoración.</p>
+    </div>
+    <div class="card" style="max-width:950px">
+      <div class="concept" style="margin-bottom:14px"><strong>¿Qué se hace y para qué?</strong><br>1) Una persona distinta de los autores recorre el OVA. 2) Valora cada criterio de 1 a 5 y escribe qué parte concreta respalda su valoración. 3) Registra una fortaleza y una mejora prioritaria. 4) Guarda la revisión y descarga el registro para compartirlo con el equipo.<br><br><strong>¿Qué métrica obtendremos?</strong> Número de revisiones recibidas, promedio por criterio y promedio global. Estos datos resumen las valoraciones de los revisores; no equivalen automáticamente a la nota oficial ni reemplazan el juicio de la docente.</div>
+      <p class="hint">Escala: 1 = evidencia ausente o insuficiente; 2 = evidencia limitada; 3 = cumple de manera básica; 4 = cumple con claridad; 5 = cumple de forma sólida y consistente. Cada puntuación debe citar una parte concreta del recurso.</p>
+      <div style="display:grid;gap:14px">
+        <div><label class="fl">Nombre de quien realiza la coevaluación</label><input id="coeval-nombre" type="text" placeholder="Nombre del compañero/a"></div>
+        <div class="grid-2" style="gap:12px">
+          <div><label class="fl">1. Integración de aprendizajes del curso (1–5)</label><p class="scale-note">Observa si conecta cuestionamiento, formulación de preguntas, análisis de información y creatividad; busca esa integración en los módulos y en el caso ConectaU.</p><select class="coeval-score" id="coeval-1"><option value="">Seleccionar</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><textarea id="coeval-e1" placeholder="Evidencia u observación concreta"></textarea></div>
+          <div><label class="fl">2. Organización y navegación (1–5)</label><p class="scale-note">Observa si el propósito, la ruta, los pasos siguiente/anterior y las instrucciones permiten saber dónde estás y qué hacer después.</p><select class="coeval-score" id="coeval-2"><option value="">Seleccionar</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><textarea id="coeval-e2" placeholder="Evidencia u observación concreta"></textarea></div>
+          <div><label class="fl">3. Multimedia e interactividad (1–5)</label><p class="scale-note">Observa si videos, ejercicios y controles funcionan y aportan al aprendizaje; no basta con que estén presentes.</p><select class="coeval-score" id="coeval-3"><option value="">Seleccionar</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><textarea id="coeval-e3" placeholder="Evidencia u observación concreta"></textarea></div>
+          <div><label class="fl">4. Coherencia entre propósito, contenidos y actividades (1–5)</label><p class="scale-note">Comprueba si cada actividad practica un resultado anunciado y si la evaluación recoge evidencias de ese aprendizaje.</p><select class="coeval-score" id="coeval-4"><option value="">Seleccionar</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><textarea id="coeval-e4" placeholder="Evidencia u observación concreta"></textarea></div>
+          <div><label class="fl">5. Autoevaluación y coevaluación (1–5)</label><p class="scale-note">Observa si ambas incluyen criterios comprensibles, valoración y evidencias; comprueba si permiten identificar fortalezas y mejoras.</p><select class="coeval-score" id="coeval-5"><option value="">Seleccionar</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><textarea id="coeval-e5" placeholder="Evidencia u observación concreta"></textarea></div>
+          <div><label class="fl">Fortaleza principal del recurso (indica dónde la observaste)</label><textarea id="coeval-fortaleza" placeholder="¿Qué funciona especialmente bien y por qué?"></textarea><label class="fl">Mejora prioritaria (indica qué sección debe cambiar y cómo)</label><textarea id="coeval-mejora" placeholder="¿Qué convendría ajustar antes de entregar?"></textarea></div>
+        </div>
+      </div>
+      <div class="btn-row"><button class="btn-sm btn-mini" data-act="check-coeval">Validar revisión</button><button class="btn-sm btn-mini" data-act="save-coeval">Guardar esta coevaluación</button><button class="btn-sm btn-out" data-act="export-coeval">Descargar métricas (CSV)</button><button class="btn-sm btn-out" data-act="export">Descargar mis respuestas (TXT)</button></div>
+      <div class="feedback" id="coeval-feedback"></div>
+      <div class="card" style="margin-top:16px;background:var(--pale, #f4f7f8)"><h3 style="font-size:1rem">Registro de coevaluaciones guardadas en este dispositivo</h3><p class="hint">Las revisiones se guardan en el almacenamiento local de este navegador. No se envían a internet ni se sincronizan con otros equipos. Descarga el CSV y compártelo con los autores para consolidar los resultados.</p><div id="coeval-metrics" aria-live="polite"></div><div id="coeval-records" style="overflow-x:auto;margin-top:10px"></div></div>
+      <p class="hint">La coevaluación documenta una revisión entre pares del recurso. No sustituye la rúbrica oficial ni garantiza una nota: aporta evidencia para mejorar y sustentar el proceso de revisión.</p>
+    </div>
+  </div>
+</section>
+<section id="glosario" class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Para consultar</div>
+      <h2>Glosario y referencias</h2>
+    </div>
+    <div class="grid-2" style="gap:30px; align-items:start">
+      <div>
+        <dl class="gloss">
+          <div><dt>Pensamiento crítico</dt><dd>Método de examen de afirmaciones y creencias que busca evidencias, reconoce prejuicios y decide qué es razonable aceptar.</dd></div>
+          <div><dt>Prejuicio cognitivo</dt><dd>Tendencia automática a interpretar la información de forma que confirme lo que ya se cree.</dd></div>
+          <div><dt>Cinco porqués</dt><dd>Técnica de exploración que encadena preguntas «¿por qué?» para investigar posibles causas. No garantiza por sí sola identificar el origen definitivo del problema.</dd></div>
+          <div><dt>Pregunta aplicativa</dt><dd>Pregunta que conecta el análisis con la acción: «¿qué haría distinto si esto fuera cierto?».</dd></div>
+          <div><dt>Desinformación</dt><dd>Información falsa o engañosa difundida deliberadamente para influir en la opinión o el comportamiento. Conviene distinguirla de la información errónea compartida sin intención de engañar.</dd></div>
+          <div><dt>Fuente primaria</dt><dd>Documento, registro o testimonio que aporta información de primera mano sobre un hecho o proceso; su pertinencia depende de la pregunta y del contexto.</dd></div>
+          <div><dt>Matriz de decisión</dt><dd>Herramienta que compara alternativas asignando puntuaciones a criterios con distinto peso.</dd></div>
+          <div><dt>Prototipo</dt><dd>Versión mínima y funcional de una idea, hecha para ser probada y corregida antes de desarrollarla por completo.</dd></div>
+          <div><dt>Divergir / converger</dt><dd>Las dos fases del proceso creativo: generar muchas opciones y luego reducirlas con criterios.</dd></div>
+        </dl>
+      </div>
+      <div>
+        <h3 style="font-size:1.05rem; margin-bottom:14px">Referencias del curso</h3>
+        <ol class="refs">
+          <li>Elder, L., &amp; Paul, R. (2002). <em>El arte de formular preguntas esenciales: Basado en conceptos de pensamiento crítico y principios socráticos</em>. Foundation for Critical Thinking.</li>
+          <li>Elemento de competencia 1: pensamiento crítico y creativo. Material del curso.</li>
+          <li>Elemento de competencia 2: pensamiento crítico y creativo. Material del curso.</li>
+          <li>Elemento de competencia 3: pensamiento crítico y creativo. Material del curso.</li>
+          <li>Elemento de competencia 4: pensamiento crítico y creativo. Material del curso.</li>
+          <li>Pensamiento crítico y desinformación. Trabajo del curso sobre la cadena de falsas amenazas en Bogotá.</li>
+          <li>El arte de preguntar. Actividad del curso sobre formulación de preguntas por niveles.</li>
+          <li>ConectaU. Prototipo de solución para la búsqueda de compañeros académicos. Trabajo colaborativo del curso.</li>
+        </ol>
+
+        <h3 style="font-size:1.05rem; margin:26px 0 12px">Recursos audiovisuales citados</h3>
+        <ul class="refs">
+          <li><a href="https://www.youtube.com/watch?v=YO4pwpaH8Fo" target="_blank" rel="noopener">5 consejos para mejorar su pensamiento crítico</a> — Samantha Agoos, TED-Ed en Español (4:37).</li>
+          <li><a href="https://www.youtube.com/watch?v=7C3XUy3BYug" target="_blank" rel="noopener">Esta herramienta te ayudará a mejorar tu pensamiento crítico</a> — Erick Wilberding, TED-Ed en Español (5:26).</li>
+          <li><a href="https://www.youtube.com/watch?v=eYwssDlhPxs" target="_blank" rel="noopener">La técnica de los 5 porqués</a> — LinGo Tesis (5:12).</li>
+          <li><a href="https://www.youtube.com/watch?v=pN9EB_1HeAk" target="_blank" rel="noopener">¿Qué son las fake news? Cómo luchar contra la desinformación</a> — Telefónica (8:46).</li>
+          <li><a href="https://www.youtube.com/watch?v=i-htv81L04g" target="_blank" rel="noopener">¿Cómo desarrollar el pensamiento crítico?</a> — CuriosaMente (8:11).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="brand" style="color:#fff; margin-bottom:12px"><span class="dot">PC</span> Piensa · Pregunta · Crea</div>
+      <p>Objeto Virtual de Aprendizaje sobre pensamiento crítico y creativo. Organizado en cuatro módulos de aprendizaje integrados.</p>
+    </div>
+    <div>
+      <h5>Contenido</h5>
+      <p>Curiosidad y cuestionamiento<br>Hábito de preguntar<br>Construcción de respuestas<br>Creatividad aplicada</p>
+    </div>
+    <div>
+      <h5>Uso pedagógico</h5>
+      <p>Autocontenido en un solo archivo HTML.<br>Se abre en navegadores actuales; la publicación en plataformas depende de sus requisitos técnicos.<br>Imprimible y exportable a PDF.</p>
+    </div>
+    <div class="fnote"><strong>Construcción de los autores:</strong> Jeimmy Constanza Prieto Acero y Yam Alexander Zuleta Sanmartín. Recurso educativo para uso formativo. Las respuestas de las actividades se procesan en el navegador y la exportación se descarga localmente. Los recursos externos (por ejemplo, videos, miniaturas y fuentes) pueden generar solicitudes a sus respectivos proveedores.</div>
+  </div>
+</footer>
+<script>/* ============ utilidades ============ */
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+
+/* ============ recorrido guiado: siguiente paso ============ */
+const journeySteps=[
+ ['inicio','Presentación'],['proposito','Propósito y resultados'],['ruta','Mapa del recorrido'],['m1','Módulo 1 · Curiosidad'],['m2','Módulo 2 · Preguntar'],['m3','Módulo 3 · Analizar'],['m4','Módulo 4 · Crear'],['caso','Caso integrador ConectaU'],['evaluacion','Evaluación final'],['auto','Autoevaluación y compromiso'],['coevaluacion','Coevaluación'],['glosario','Glosario y referencias']
+];
+journeySteps.forEach((step,i)=>{
+ const sec=document.getElementById(step[0]); if(!sec) return;
+ const wrap=sec.querySelector('.wrap'); if(!wrap) return;
+ const prev=journeySteps[i-1], next=journeySteps[i+1];
+ const nav=document.createElement('div'); nav.className='journey';
+ nav.innerHTML=`<div><small>Recorrido guiado · Paso ${i+1} de ${journeySteps.length}</small><strong>${next?'Siguiente: '+next[1]:'Has llegado al final del recorrido.'}</strong></div><div class="journey-actions">${prev?`<a class="prev" href="#${prev[0]}">← Anterior</a>`:''}${next?`<a href="#${next[0]}">Continuar →</a>`:`<a href="#inicio">Volver al inicio ↑</a>`}</div>`;
+ wrap.appendChild(nav);
+});
+
+
+/* ============ barra de progreso + nav activa ============ */
+const bar = $('#bar');
+const secs = $$('main section[id]');
+const navLinks = $$('#nav a');
+function onScroll(){
+  const h = document.documentElement;
+  const pct = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
+  bar.style.width = Math.min(100, Math.max(0, pct)) + '%';
+  let cur = secs[0].id;
+  secs.forEach(s=>{ if(s.getBoundingClientRect().top <= 140) cur = s.id; });
+  navLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href') === '#'+cur));
+}
+document.addEventListener('scroll', onScroll, {passive:true});
+onScroll();
+
+/* ============ reproductor de video (click-to-play) ============ */
+$$('.vid').forEach(v=>{
+  const id = v.dataset.yt, title = v.dataset.title, dur = v.dataset.dur;
+  const thumb = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+  v.innerHTML = `
+    <div class="vid-card" role="button" tabindex="0" aria-label="Reproducir: ${title}">
+      <div class="vid-thumb">
+        <img src="${thumb}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">
+        <span class="vid-play"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="vid-dur">${dur}</span>
+      </div>
+      <div class="vid-meta">
+        <div class="vid-title">${title}</div>
+        <div class="vid-src">YouTube · clic para reproducir</div>
+      </div>
+    </div>`;
+  const card = $('.vid-card', v);
+  const play = ()=>{
+    v.innerHTML = `<div class="vid-frame"><iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" title="${title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`;
+  };
+  card.addEventListener('click', play);
+  card.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); play(); } });
+});
+
+/* ============ datos de actividades de clasificación ============ */
+const ACT1 = [
+  {t:'«Ese artículo está mal porque no pienso como el autor.»', ok:0, why:'Rechaza sin examinar: la razón es la diferencia de opinión, no un problema en la evidencia. Eso es crítica destructiva.'},
+  {t:'«Antes de creer esta cifra, voy a buscar el informe original que la respalda.»', ok:1, why:'Busca la fuente primaria: eso es exactamente el paso 2 del ciclo de cuestionamiento.'},
+  {t:'«Todo el mundo lo dice, así que debe ser cierto.»', ok:0, why:'No hay examen, solo repetición social. La popularidad de una idea no es evidencia de su verdad.'},
+  {t:'«¿Qué intereses tiene quien publicó esto?»', ok:1, why:'Preguntar por el propósito de la fuente es uno de los filtros centrales al evaluar información.'},
+  {t:'«Esa idea es una tontería, no hace falta explicar por qué.»', ok:0, why:'Descalifica sin argumentos. Sin razones, no hay pensamiento crítico: solo desprecio.'},
+  {t:'«Puede que yo esté equivocado; ¿qué evidencia me haría cambiar de opinión?»', ok:1, why:'Reconocer el propio prejuicio y definir qué te haría cambiar es la forma más alta del pensamiento crítico.'}
+];
+
+const ACT3 = [
+  {t:'«El informe se publicó el 3 de mayo de 2024 y tiene 48 páginas.»', ok:0, why:'Es comprobable: se puede abrir el documento y contar las páginas. Hecho verificable.'},
+  {t:'«Ese informe es el mejor que se ha escrito sobre el tema.»', ok:1, why:'«Mejor» es una valoración. No se comprueba, se argumenta.'},
+  {t:'«Está demostrado que los estudiantes de hoy leen menos que antes.»', ok:2, why:'Suena a hecho, pero no dice qué estudio, de qué año ni qué población. Sin fuente, es una afirmación dudosa.'},
+  {t:'«Un estudio de 2022 encontró que el 41% de los encuestados lee menos de un libro al año.»', ok:0, why:'Indica el tipo de estudio, el año y el dato. Se puede ir a la fuente: hecho verificable.'},
+  {t:'«La ciudad se ha vuelto peligrosa últimamente; se siente en el ambiente.»', ok:2, why:'Habla de una percepción y la presenta como diagnóstico. Sin cifras comparables en el tiempo, no se sostiene.'},
+  {t:'«Ese grupo de música es insoportable.»', ok:1, why:'Es una preferencia personal, legítima pero no verificable: opinión.'},
+  {t:'«El 70% de las personas que compartieron la cadena no verificaron la fuente.»', ok:0, why:'Es un porcentaje con referencia a una población concreta: comprobable. Hecho verificable.'},
+  {t:'«Los expertos coinciden en que la solución es esta.»', ok:2, why:'«Los expertos» y «la solución» son dos vaguedades. Sin nombres ni estudios, es apelación a la autoridad sin respaldo.'}
+];
+
+/* ============ ACTIVIDAD 1 y 3: clasificación ============ */
+function buildJudge(el, data){
+  const opts = el.dataset.opts.split('|');
+  el.innerHTML = data.map((d,i)=>`
+    <div class="jitem" data-i="${i}">
+      <div class="stmt">${d.t}</div>
+      <div class="opts">${opts.map((o,j)=>`<button class="jbtn" data-i="${i}" data-j="${j}">${o}</button>`).join('')}</div>
+      <div class="jexp" data-exp="${i}"><strong>Respuesta correcta: ${opts[d.ok]}.</strong> ${d.why}</div>
+    </div>`).join('');
+  el.addEventListener('click', e=>{
+    const b = e.target.closest('.jbtn'); if(!b) return;
+    $$(`.jbtn[data-i="${b.dataset.i}"]`, el).forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel');
+  });
+}
+buildJudge($('#act1'), ACT1);
+buildJudge($('#act3'), ACT3);
+
+function gradeJudge(el, data, fb, label){
+  let correct = 0, answered = 0, missing = false;
+  data.forEach((d,i)=>{
+    const sel = $(`.jbtn.sel[data-i="${i}"]`, el);
+    const exp = $(`.jexp[data-exp="${i}"]`, el);
+    if(exp) exp.classList.add('show');
+    $$(`.jbtn[data-i="${i}"]`, el).forEach(b=>{ b.classList.remove('correct','wrong'); });
+    if(!sel){ missing = true; return; }
+    answered++;
+    const j = +sel.dataset.j;
+    const target = $(`.jbtn[data-i="${i}"][data-j="${d.ok}"]`, el);
+    if(j === d.ok){ correct++; sel.classList.add('correct'); }
+    else { sel.classList.add('wrong'); if(target) target.classList.add('correct'); }
+  });
+  fb.className = 'feedback show ' + (correct === data.length ? 'good' : (correct >= data.length*0.6 ? 'good' : 'bad'));
+  let msg = `<strong>${correct} de ${data.length} correctas.</strong> `;
+  if(missing) msg += `Te faltan ${data.length - answered} por clasificar. `;
+  if(correct === data.length) msg += 'Clasificación impecable: distingues los criterios, no solo las etiquetas.';
+  else if(correct >= data.length*0.6) msg += 'Buen desempeño. Lee las explicaciones de las que fallaste: ahí está el criterio que conviene afinar.';
+  else msg += 'Revisa las explicaciones con calma y vuelve a intentarlo. La meta es entender el criterio, no acertar.';
+  msg += ' Las respuestas correctas quedaron marcadas en verde.';
+  fb.innerHTML = msg;
+}
+
+/* ============ ACTIVIDAD 2: cadena de cinco porqués ============ */
+const chain2 = $('#chain2');
+chain2.innerHTML = Array.from({length:5},(_,i)=>`
+  <div class="row">
+    <span class="n">${i+1}</span>
+    <input type="text" class="wh" data-i="${i}" placeholder="${i===0?'¿Por qué ocurre el problema?':'¿Por qué ocurrió lo anterior?'}">
+  </div>`).join('');
+
+const EJEMPLO2 = 'Ejemplo resuelto (problema: nadie entrega a tiempo). 1) Porque cada uno hace su parte a última hora. 2) Porque nadie fijó fechas internas. 3) Porque el grupo nunca acordó un cronograma. 4) Porque se asumió que todos trabajaban al mismo ritmo. 5) Porque al inicio no se dedicó tiempo a acordar cómo trabajar juntos. Posible explicación: falta de acuerdos explícitos de trabajo. Acción: dedicar la primera sesión a definir cronograma y responsable de seguimiento.';
+
+function check2(){
+  const prob=$('#p2-prob').value.trim(), whys=$$('.wh',chain2).map(x=>x.value.trim());
+  const raiz=$('#p2-raiz').value.trim(), alt=$('#p2-alternativa').value.trim(), ev=$('#p2-evidencia').value.trim(), accion=$('#p2-accion').value.trim();
+  const ratings=$$('.p2-r').map(x=>x.value);
+  const fb=$('#fb2');
+  const missing=[];
+  if(!prob) missing.push('describe el problema en términos observables');
+  if(!$('#p2-literal').value.trim()) missing.push('formula una pregunta literal');
+  if(!$('#p2-inferencial').value.trim()) missing.push('formula una pregunta inferencial');
+  if(!$('#p2-critica').value.trim()) missing.push('formula una pregunta crítica');
+  if(whys.filter(Boolean).length<3) missing.push('desarrolla al menos tres eslabones; cinco no son obligatorios si no tienen sentido');
+  if(!raiz) missing.push('formula una explicación provisional');
+  if(!alt) missing.push('considera otra explicación posible');
+  if(!ev) missing.push('indica qué evidencia permitiría contrastar la explicación');
+  if(!accion) missing.push('propón una acción relacionada con el análisis');
+  if(ratings.some(x=>x==='')) missing.push('completa la autoevaluación de los cinco criterios');
+  const score=ratings.reduce((a,x)=>a+(x===''?0:+x),0);
+  let msg=`<strong>Revisión guiada: ${ratings.filter(x=>x!=='').length}/5 criterios valorados; autoevaluación ${score}/10.</strong><br>`;
+  msg+=missing.length?'<br><strong>Antes de cerrar:</strong><ul>'+missing.map(x=>`<li>${x}.</li>`).join('')+'</ul>':'<br>Has completado los componentes requeridos para revisar tu análisis.';
+  msg+='<br><strong>Revisa la lógica:</strong> comprueba que tu pregunta literal recupere datos explícitos, la inferencial proponga relaciones posibles y la crítica examine evidencias y supuestos. Luego lee la cadena desde el primer porqué. Comprueba que cada respuesta conteste la pregunta anterior y que no hayas convertido una suposición en un hecho. Contrasta la posible explicación con la evidencia que identificaste y considera si existen causas alternativas.';
+  msg+='<br><br><em>Este resultado no es una calificación automática del contenido: tú valoras cada criterio y debes justificarlo con tu análisis. Los cinco porqués orientan la exploración, no prueban una causa raíz.</em>';
+  fb.className='feedback show '+(missing.length?'bad':'good'); fb.innerHTML=msg;
+}
+
+/* ============ ACTIVIDAD 4 y 6: retroalimentación de escritura ============ */
+function check4(){
+  const fields=['p3-afirm','p3-fuente','p3-evid','p3-razon','p3-conc','p3-lim'].map(id=>$('#'+id).value.trim());
+  const ratings=$$('.p4-r').map(x=>x.value), fb=$('#fb4');
+  const labels=['afirmación concreta','fuente específica','evidencia o dato identificable','razonamiento que conecta evidencia y afirmación','conclusión provisional','límite o información faltante'];
+  const missing=fields.map((v,i)=>v?null:labels[i]).filter(Boolean);
+  if(ratings.some(x=>x==='')) missing.push('valorar los cinco criterios de autoevaluación');
+  const score=ratings.reduce((a,x)=>a+(x===''?0:+x),0);
+  const msg=`<strong>Revisión del argumento: autoevaluación ${score}/10.</strong>`+
+    (missing.length?'<br><strong>Elementos pendientes:</strong><ul>'+missing.map(x=>`<li>${x}</li>`).join('')+'</ul>':'<br>Has completado los componentes de la estructura argumentativa.')+
+    '<br><strong>Control de calidad:</strong> comprueba que la fuente realmente contenga la evidencia que mencionas; que el dato sea pertinente para la afirmación; que tu razonamiento explique el vínculo y que la conclusión no vaya más allá de lo que la evidencia permite.'+
+    '<br><br><em>El sistema verifica la estructura y registra tu autoevaluación; no puede determinar por sí solo si la fuente es confiable o si tu argumento es válido. Esa revisión requiere leer y contrastar el contenido.</em>';
+  fb.className='feedback show '+(missing.length?'bad':'good'); fb.innerHTML=msg;
+}
+
+function check6(){
+  const v=['p6-1','p6-2','p6-3','p6-4','p6-5'].map(id=>$('#'+id).value.trim());
+  const ratings=$$('.p6-r').map(x=>x.value), fb=$('#fb6');
+  const labels=['situación delimitada','tres alternativas','criterio y alternativa elegida','prueba mínima definida','indicador, plazo y decisión posterior'];
+  const missing=v.map((x,i)=>x?null:labels[i]).filter(Boolean);
+  if(ratings.some(x=>x==='')) missing.push('valorar los cinco criterios de revisión');
+  const score=ratings.reduce((a,x)=>a+(x===''?0:+x),0);
+  const msg=`<strong>Resultado de tu revisión: ${score} / 10.</strong>`+
+    (missing.length?'<br><strong>Revisa estos puntos:</strong><ul>'+missing.map(x=>`<li>${x}</li>`).join('')+'</ul>':'<br>Los cinco aspectos del diseño de prueba están valorados.')+
+    '<br><strong>Antes de realizarla:</strong> confirma que sea pequeña, segura y realizable; evita recoger datos personales innecesarios; define un indicador observable y decide por anticipado qué harás si el resultado no es el esperado.'+
+    '<br><br><em>Esta revisión evalúa la claridad del plan, no demuestra ni predice que la solución vaya a funcionar.</em>';
+  fb.className='feedback show '+(missing.length?'bad':'good'); fb.innerHTML=msg;
+}
+
+/* ============ ACTIVIDAD 5: matriz de decisión ============ */
+function calcMatriz(){
+  $$('.peso, .punt').forEach(i=>{const out=i.nextElementSibling;if(out && out.tagName==='OUTPUT') out.textContent=i.value;});
+  const pesos = $$('.peso').map(i=>+i.value);
+  const pts = [[],[],[]];
+  $$('.punt').forEach(i=>{ pts[+i.dataset.a][+i.dataset.c] = +i.value; });
+  const totales = [0,1,2].map(a => pesos.reduce((acc,w,c)=>acc + w * (pts[a][c]||0), 0));
+  $('#tA').textContent = totales[0];
+  $('#tB').textContent = totales[1];
+  $('#tC').textContent = totales[2];
+  const max = Math.max(...totales);
+  const names = ['A · Perfiles con intereses y fortalezas','B · Grupos armados por afinidad','C · Foro abierto'];
+  const winners = totales.map((t,i)=>t===max?i:-1).filter(i=>i>=0);
+  const win = $('#win');
+  win.classList.add('show');
+  if(winners.length > 1){
+    win.innerHTML = `<strong>Empate entre ${winners.map(i=>names[i].split(' · ')[0]).join(' y ')}.</strong> Cuando dos alternativas empatan, el siguiente criterio no es una columna más: es preguntarte cuál de las dos falla menos si te equivocas.`;
+  } else {
+    const i = winners[0];
+    const msg = {
+      0:'Esta alternativa obtiene el mayor resultado con los criterios y pesos configurados actualmente. La puntuación no demuestra que elimine el problema ni que sea superior bajo otros criterios.',
+      1:'Esta alternativa obtiene el mayor resultado con los criterios y pesos configurados. Conviene revisar si los criterios contemplan inclusión y acceso equitativo.',
+      2:'Esta alternativa obtiene el mayor resultado con los criterios y pesos configurados. Evalúa si la estructura propuesta permite comparar información suficiente para tomar una decisión.'
+    }[i];
+    win.innerHTML = `<strong>Mayor puntuación según los criterios seleccionados: ${names[i]} (${max} puntos).</strong> ${msg} Cambia los pesos y observa si el resultado se mantiene: la matriz apoya la comparación, pero la decisión depende de los criterios, sus ponderaciones y la calidad de la información disponible.`;
+  }
+}
+$$('.peso, .punt').forEach(i=>{i.addEventListener('input', calcMatriz);i.addEventListener('change', calcMatriz);});
+calcMatriz();
+
+/* ============ EVALUACIÓN ============ */
+function gradeQuiz(){
+  let correct = 0, answered = 0;
+  $$('#quiz .q').forEach((q,qi)=>{
+    const sel = $(`input[name="q${qi}"]:checked`);
+    const fb = $('.qfb', q);
+    const okv = +fb.dataset.ok;
+    $$('.opt', q).forEach(o=>o.classList.remove('ok','no'));
+    if(sel){
+      answered++;
+      const v = +sel.value;
+      sel.closest('.opt').classList.add(v === okv ? 'ok' : 'no');
+      if(v !== okv){
+        const target = $(`input[name="q${qi}"][value="${okv}"]`);
+        if(target) target.closest('.opt').classList.add('ok');
+      }
+      if(v === okv) correct++;
+    } else {
+      const target = $(`input[name="q${qi}"][value="${okv}"]`);
+      if(target) target.closest('.opt').classList.add('ok');
+    }
+    fb.classList.add('show');
+    fb.className = 'qfb show';
+    fb.style.background = '#f4f1fb';
+    fb.style.border = '1px solid rgba(125,92,192,.22)';
+    fb.style.color = '#3c2a63';
+  });
+  const pct = Math.round(correct / 8 * 100);
+  const res = $('#quizres');
+  res.classList.add('show');
+  $('#quizpct').textContent = pct + '%';
+  let msg;
+  if(pct === 100) msg = 'Respondiste correctamente las preguntas del cuestionario. Ahora la prueba real es usarlos fuera de este recurso.';
+  else if(pct >= 75) msg = `${correct} de 8 correctas. Tienes la competencia instalada; revisa las preguntas marcadas en rojo y vuelve a intentarlo.`;
+  else if(pct >= 50) msg = `${correct} de 8 correctas. Hay bases sólidas y algunos criterios por afinar. Lee la retroalimentación de cada pregunta y repite la evaluación.`;
+  else msg = `${correct} de 8 correctas. No es un problema: vuelve a los cuatro módulos, resuelve las actividades y regresa. La evaluación es una herramienta, no una nota.`;
+  if(answered < 8) msg += ` Dejaste ${8-answered} sin responder; las marqué con la respuesta correcta en verde.`;
+  $('#quizmsg').textContent = msg;
+  res.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+
+function checkCoeval(){
+  const scores=$$('.coeval-score').map(x=>x.value);
+  const feedback=$('#coeval-feedback');
+  const missing=scores.filter(x=>!x).length;
+  const noEvidence=[1,2,3,4,5].filter(i=>$('#coeval-e'+i).value.trim().length<12).length;
+  if(missing || noEvidence){
+    feedback.className='feedback show bad';
+    feedback.innerHTML=`<strong>Coevaluación incompleta.</strong> ${missing?`Faltan ${missing} valoraciones. `:''}${noEvidence?`Faltan observaciones concretas (al menos una frase) en ${noEvidence} criterios. `:''}Describe qué parte del OVA observaste y por qué justifica la puntuación.`;
+    return;
+  }
+  feedback.className='feedback show good';
+  feedback.innerHTML='<strong>Coevaluación completa.</strong> Los cinco criterios tienen valoración y evidencia escrita. Identifica la mejora prioritaria y contrástala con la rúbrica oficial; el promedio no sustituye el análisis cualitativo.';
+}
+
+/* ============ REGISTRO PERSISTENTE DE COEVALUACIONES ============ */
+const COEVAL_KEY = 'piensaPreguntaCrea_coevaluaciones_v1';
+function getCoevalRecords(){
+  try { return JSON.parse(localStorage.getItem(COEVAL_KEY) || '[]'); }
+  catch(e){ return []; }
+}
+function renderCoevalRecords(){
+  const records=getCoevalRecords();
+  const metrics=$('#coeval-metrics'), box=$('#coeval-records');
+  if(!metrics || !box) return;
+  if(!records.length){ metrics.innerHTML='<p class="hint">Todavía no hay revisiones guardadas. Completa una coevaluación y pulsa “Guardar esta coevaluación”.</p>'; box.innerHTML=''; return; }
+  const avgs=[1,2,3,4,5].map(i=>records.reduce((a,r)=>a+Number(r.scores[i-1]),0)/records.length);
+  const global=avgs.reduce((a,b)=>a+b,0)/avgs.length;
+  metrics.innerHTML=`<div class="grid-3"><div class="card"><strong>${records.length}</strong><p>Revisiones guardadas</p></div><div class="card"><strong>${global.toFixed(2)} / 5</strong><p>Promedio global</p></div><div class="card"><strong>${Math.min(...avgs).toFixed(2)}–${Math.max(...avgs).toFixed(2)}</strong><p>Rango de promedios por criterio</p></div></div><p class="scale-note">Promedios por criterio: ${avgs.map((v,i)=>`C${i+1}: ${v.toFixed(2)}`).join(' · ')}</p>`;
+  box.innerHTML=`<table class="mtable"><thead><tr><th>Fecha</th><th>Evaluador</th><th>C1</th><th>C2</th><th>C3</th><th>C4</th><th>C5</th><th>Promedio</th></tr></thead><tbody>${records.map(r=>`<tr><td>${r.date}</td><td>${escapeHtml(r.name)}</td>${r.scores.map(v=>`<td>${v}</td>`).join('')}<td>${(r.scores.reduce((a,b)=>a+b,0)/5).toFixed(2)}</td></tr>`).join('')}</tbody></table>`;
+}
+function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function saveCoeval(){
+  checkCoeval();
+  const fb=$('#coeval-feedback');
+  if(!fb.classList.contains('good')) return;
+  const record={date:new Date().toLocaleDateString('es-CO'),name:$('#coeval-nombre').value.trim(),scores:[1,2,3,4,5].map(i=>Number($('#coeval-'+i).value)),evidence:[1,2,3,4,5].map(i=>$('#coeval-e'+i).value.trim()),strength:$('#coeval-fortaleza').value.trim(),improvement:$('#coeval-mejora').value.trim()};
+  const records=getCoevalRecords(); records.push(record);
+  try { localStorage.setItem(COEVAL_KEY,JSON.stringify(records)); fb.className='feedback show good'; fb.textContent='Coevaluación guardada en este navegador. Descarga el CSV para conservar una copia y compartirla con el equipo.'; renderCoevalRecords(); }
+  catch(e){ fb.className='feedback show bad'; fb.textContent='No fue posible guardar en el almacenamiento local. Usa “Descargar mis respuestas (TXT)” y conserva el archivo manualmente.'; }
+}
+function exportCoevalCSV(){
+  const records=getCoevalRecords();
+  if(!records.length){alert('Todavía no hay coevaluaciones guardadas. Completa una y pulsa “Guardar esta coevaluación”.');return;}
+  const headers=['fecha','evaluador','criterio_1','evidencia_1','criterio_2','evidencia_2','criterio_3','evidencia_3','criterio_4','evidencia_4','criterio_5','evidencia_5','promedio','fortaleza','mejora_prioritaria'];
+  const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const rows=records.map(r=>[r.date,r.name,...r.scores.flatMap((v,i)=>[v,r.evidence[i]]), (r.scores.reduce((a,b)=>a+b,0)/5).toFixed(2),r.strength,r.improvement].map(q).join(','));
+  const blob=new Blob(['\ufeff'+headers.join(',')+'\n'+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='registro-coevaluaciones-OVA.csv'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+}
+document.addEventListener('DOMContentLoaded',renderCoevalRecords);
+
+/* ============ AUTOEVALUACIÓN ============ */
+function updateSelf(){
+  const sl = $$('.self');
+  const vals = sl.map(i=>+i.value);
+  sl.forEach((i,k)=>{ i.parentElement.querySelector('.val').textContent = vals[k]; });
+  const avg = Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+  $('#selfavg').textContent = avg + '%';
+  let m;
+  if(avg >= 80) m = 'Estás aplicando el método de forma consistente. El siguiente paso es sostenerlo cuando la información confirme lo que ya piensas: ahí es donde más cuesta.';
+  else if(avg >= 60) m = 'Tienes una base clara con puntos desiguales. Fíjate en las barras más bajas: suelen ser justo las que flaquean bajo presión.';
+  else if(avg >= 40) m = 'Reconoces el valor del método, pero todavía no lo usas de forma automática. Elige una sola práctica y repítela durante una semana.';
+  else m = 'Estás al inicio del recorrido, y eso está bien: ahora sabes qué mirar. Empieza por la primera barra, verificar antes de compartir, y avanza de una en una.';
+  $('#selfmsg').textContent = m;
+}
+$$('.self').forEach(i=>i.addEventListener('input', updateSelf));
+
+/* ============ EXPORTAR ============ */
+function exportar(){
+  const v = id => { const el = $('#'+id); return el ? el.value.trim() : ''; };
+  const whys = $$('.wh', chain2).map((i,k)=>`  ${k+1}. ${i.value.trim()||'(sin respuesta)'}`).join('\n');
+  const pct = $('#quizpct').textContent;
+  const avg = $('#selfavg').textContent;
+  const pts = $$('.punt').map(i=>+i.value);
+  const pesos = $$('.peso').map(i=>+i.value);
+  const txt = `OBJETO VIRTUAL DE APRENDIZAJE
+Pensamiento crítico y creativo · Registro de trabajo
+
+Fecha: ${new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'})}
+
+────────────────────────────────
+ACTIVIDAD 2 · CINCO PORQUÉS
+────────────────────────────────
+Problema: ${v('p2-prob')||'(sin respuesta)'}
+Pregunta literal: ${v('p2-literal')||'(sin respuesta)'}
+Pregunta inferencial: ${v('p2-inferencial')||'(sin respuesta)'}
+Pregunta crítica: ${v('p2-critica')||'(sin respuesta)'}
+${whys}
+Posible causa o explicación: ${v('p2-raiz')||'(sin respuesta)'}
+Otra explicación: ${v('p2-alternativa')||'(sin respuesta)'}
+Evidencia para contrastar: ${v('p2-evidencia')||'(sin respuesta)'}
+Acción: ${v('p2-accion')||'(sin respuesta)'}
+Autoevaluación (0-2): ${[1,2,3,4,5].map(i=>v('p2-r'+i)||'sin valorar').join(' / ')}
+
+────────────────────────────────
+ACTIVIDAD 4 · RESPUESTA FUNDAMENTADA
+────────────────────────────────
+Afirmación examinada: ${v('p3-afirm')||'(sin respuesta)'}
+Fuente: ${v('p3-fuente')||'(sin respuesta)'}
+Evidencia/dato: ${v('p3-evid')||'(sin respuesta)'}
+Razonamiento: ${v('p3-razon')||'(sin respuesta)'}
+Conclusión: ${v('p3-conc')||'(sin respuesta)'}
+Límite de la conclusión: ${v('p3-lim')||'(sin respuesta)'}
+Autoevaluación (0-2): ${[1,2,3,4,5].map(i=>v('p4-r'+i)||'sin valorar').join(' / ')}
+
+────────────────────────────────
+ACTIVIDAD 5 · MATRIZ DE DECISIÓN
+────────────────────────────────
+Pesos (impacto / facilidad / sostenibilidad): ${pesos.join(' / ')}
+Totales: A=${$('#tA').textContent}  B=${$('#tB').textContent}  C=${$('#tC').textContent}
+Alternativa elegida: ${v('matriz-eleccion')||'(sin seleccionar)'}
+Justificación: ${v('matriz-razon')||'(sin respuesta)'}
+Qué comprobar: ${v('matriz-prueba')||'(sin respuesta)'}
+
+────────────────────────────────
+ACTIVIDAD 6 · MI PROBLEMA
+────────────────────────────────
+1. Necesidad: ${v('p6-1')||'(sin respuesta)'}
+2. Tres alternativas: ${v('p6-2')||'(sin respuesta)'}
+3. Criterio y selección: ${v('p6-3')||'(sin respuesta)'}
+4. Prueba mínima: ${v('p6-4')||'(sin respuesta)'}
+5. Indicador y plazo: ${v('p6-5')||'(sin respuesta)'}
+Autoevaluación (0-2): ${[1,2,3,4,5].map(i=>v('p6-r'+i)||'sin valorar').join(' / ')}
+
+────────────────────────────────
+EVALUACIÓN, AUTOEVALUACIÓN Y COEVALUACIÓN
+────────────────────────────────
+Resultado de la evaluación: ${pct}
+Autoevaluación promedio: ${avg}
+
+COEVALUACIÓN DEL RECURSO
+Evaluador: ${v('coeval-nombre')||'(sin indicar)'}
+${[1,2,3,4,5].map(i=>`Criterio ${i}: ${v('coeval-'+i)||'(sin valorar)'} / 5\nObservación: ${v('coeval-e'+i)||'(sin observación)'}`).join('\n')}
+Fortaleza: ${v('coeval-fortaleza')||'(sin indicar)'}
+Mejora prioritaria: ${v('coeval-mejora')||'(sin indicar)'}
+
+────────────────────────────────
+COMPROMISO DE UNA SEMANA
+────────────────────────────────
+Acción: ${v('compromiso')||'(sin respuesta)'}
+Cómo sabré que lo cumplí: ${v('comocumplo')||'(sin respuesta)'}
+
+────────────────────────────────
+Generado localmente en el navegador. La exportación se descarga en este dispositivo; el uso de recursos externos puede generar solicitudes a sus proveedores.
+`;
+  const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'OVA-pensamiento-critico-respuestas.txt';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ============ enrutamiento de botones ============ */
+document.addEventListener('click', e=>{
+  const b = e.target.closest('[data-act]'); if(!b) return;
+  const a = b.dataset.act;
+  if(a === 'check1') gradeJudge($('#act1'), ACT1, $('#fb1'));
+  if(a === 'check3') gradeJudge($('#act3'), ACT3, $('#fb3'));
+  if(a === 'check2') check2();
+  if(a === 'check4') check4();
+  if(a === 'check6') check6();
+  if(a === 'ejemplo2'){
+    const fb = $('#fb2');
+    fb.className = 'feedback show good';
+    fb.innerHTML = '<strong>Ejemplo resuelto.</strong> ' + EJEMPLO2 + ' <em>Observa la estructura: cada eslabón se apoya en el anterior y el quinto ya no habla de personas, sino de un acuerdo que faltó.</em>';
+  }
+  if(a === 'quiz') gradeQuiz();
+  if(a === 'reset-quiz'){
+    $$('#quiz input[type=radio]').forEach(i=>i.checked = false);
+    $$('#quiz .opt').forEach(o=>o.classList.remove('ok','no'));
+    $$('#quiz .qfb').forEach(f=>{ f.classList.remove('show'); f.style.background=''; f.style.border=''; f.style.color=''; });
+    $('#quizres').classList.remove('show');
+    $('#quizpct').textContent = '0%';
+  }
+  if(a === 'reset-matriz'){
+    const defPeso = [3,2,2], defPts = [[5,3,5],[4,4,3],[2,5,2]];
+    $$('.peso').forEach((i,k)=>i.value = defPeso[k]);
+    $$('.punt').forEach(i=>i.value = defPts[+i.dataset.a][+i.dataset.c]);
+    calcMatriz();
+  }
+  if(a === 'export') exportar();
+  if(a === 'check-coeval') checkCoeval();
+  if(a === 'save-coeval') saveCoeval();
+  if(a === 'export-coeval') exportCoevalCSV();
+});
+
+/* ============ init ============ */
+calcMatriz();
+updateSelf();
+</script>
+</body>
+</html>
